@@ -17,6 +17,12 @@
 # RStudio files
 .Rproj.user/
 
+# files produced from markdown
+HOWTO.html
+HOWTO.pdf
+HOWTO.docx
+
+
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
