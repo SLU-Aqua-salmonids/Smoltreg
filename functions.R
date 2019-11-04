@@ -115,8 +115,8 @@ read_meta <- function(xlsxfile, sheet = "Metadata" ) {
               loc_name = d[d[,1]=="loc_name",2],
               startdate = as.Date(d[d[,1]=="startdate",2]),
               enddate = as.Date(d[d[,1]=="enddate",2]),
-              N_coord = d[d[,1]=="N_coord",2],
-              E_coord = d[d[,1]=="E_coord",2],
+              N_coord = as.numeric(d[d[,1]=="N_coord",2]),
+              E_coord = as.numeric(d[d[,1]=="E_coord",2]),
               contact = d[d[,1]=="contact",2],
               email   = d[d[,1]=="email",2],
               dummy_tags = d[d[,1]=="dummy_tags",2]
@@ -138,7 +138,8 @@ read_meta <- function(xlsxfile, sheet = "Metadata" ) {
 # Read sheet with fish data and do some basic cleanup. ------------------------- 
 read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
                       date_formats = c('%m-%d-%Y %H:%M:%S',
-                                       '%Y-%m-%d %H:%M:%S')) {
+                                       '%Y-%m-%d %H:%M:%S',
+                                       '%m/%d/%y.%H:%M:%S')) {
   d <- read_excel(xlsxfile, sheet = sheet)
   d <- d[, 1:9] # Columns needed for database MUST be  columns 1:9
   names(d) <- c("pittag", "date_time", "species", "smoltstat", "length",
@@ -151,6 +152,7 @@ read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
   # Sötebasen wants "Gers" instead of "Gärs"
   d$species <- ifelse(d$species == "Gärs", "Gers", d$species)
   d$smoltstat <- toupper(d$smoltstat)
+  d$genid <- toupper(as.character(d$genid))
 
   if (any(is.na(d$event))) {
     # If event is NA set it to UNKNOWN
@@ -161,10 +163,6 @@ read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
     d[which(d$pittag %in% dummy_tags), ]$pittag <- NA
   }
   
-  #   if (sum(d$event == CAUGHT) > 0) {
-  #   # Unmarked fish should not have a pittag, remove them (they are scanned dummytags)
-  #   d[d$event == CAUGHT,]$pittag <- NA
-  # }
   # Standarise date_time
   d$date_time <- as.character(as.POSIXct(d$date_time, tryFormats=date_formats))
   if (any(is.na(d$date_time))) {

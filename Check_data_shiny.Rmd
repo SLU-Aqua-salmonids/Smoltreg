@@ -74,23 +74,6 @@ for (name in num.columns ) {
     LENGTH_WEIGHT_OK <- FALSE
   }
 }
-##
-# cat("\n")
-# cat(paste0("**Checking environmental data format in selected columns read from *", envfile, "*.**\n\n"))
-# ##
-# if (any(is.na(as.POSIXct(envdata$date)))) {
-#   cat("+ Column *date_time* contains data that does not convert to a date, **FIX IT**.\n")
-# } else {
-#   cat("+ Column *date_time* looks OK.\n")
-# }
-# num.columns <- c("w_level", "w_temp")
-# for (name in num.columns ) {
-#   if (is.possible.numeric(envdata[ ,name])) {
-#     cat(paste("+ Column *", name, "* is numeric, good.\n", sep = "")) 
-#   } else {
-#     cat(paste("+ Column *", name, "* is **NOT** numeric, **FIX IT**.\n", sep = ""))
-#   }
-# }
 ```
 
 ### Smolt status
