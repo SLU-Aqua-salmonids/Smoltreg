@@ -36,16 +36,6 @@ shinyApp(
              hr()
       )
     ),
-    # fluidRow(
-    #   column(1,
-    #          p("Step 3")),
-    #   column(11,
-    #          downloadButton("zipfile", "Generate ZIP-file"),
-    #          p("This will generate a ZIP-file with several CSV-files formatted
-    #            for Sötebasen import."),
-    #          hr()
-    #   )
-    # ),
     fluidRow(
       column(1,
              p("Step 3")),
@@ -57,7 +47,7 @@ shinyApp(
     ),
     fluidRow(
       column(1,
-             p("Step 5")),
+             p("Step 4")),
       column(11,
              downloadButton("sqlite", "Generate SQLite database"),
              hr()
@@ -110,109 +100,7 @@ shinyApp(
       },
       contentType = "text/html"
     ) # End output$report
-    # output$zipfile <- downloadHandler(
-    #   filename = function() {paste0(tools::file_path_sans_ext(input$file1$name),
-    #                                 ".zip")},
-    #   content = function(file) {
-    #     # Generate ZIP in 'file' here.
-    #     tmpDir <- tempdir()
-    #     odir <- setwd(tmpDir)
-    #     metadata <- read_meta(input$file1$datapath)
-    #     fishdata <- read_fish(input$file1$datapath,
-    #                           dummy_tags = metadata$dummy_tags)
-    #     start_year <- as.numeric(format(metadata$startdate, "%Y"))
-    #     end_year <- as.numeric(format(metadata$enddate, "%Y"))
-    #     
-    #     # We define "Insamling" as one season for one trap.
-    #     # Start and stop year (Årtal och Årtal2) are set to the same year.
-    #     Insamling <- data.frame(InsamlingID = 1,
-    #                             Vatten = metadata$river,
-    #                             Lokal = metadata$loc_name,
-    #                             Datum1 = metadata$startdate,
-    #                             Datum1Osäkerhet = "+ - 1-5 dagar",
-    #                             Datum2 = metadata$enddate,
-    #                             Datum2Osäkerhet = "+ - 1-5 dagar",
-    #                             Årtal = start_year,
-    #                             Årtal2 = start_year,
-    #                             Metod = metadata$Metod,
-    #                             Ansvarig = metadata$Ansvarig,
-    #                             Fiskare1 = metadata$contact,
-    #                             Syfte = metadata$Syfte,
-    #                             Sekretess = "Nej",
-    #                             Signatur = metadata$Signatur
-    #     )
-    #     # Also "Ansträngning" is one season for one trap..
-    #     Ansträngning <- data.frame(AnsträngningID = 1,
-    #                                InsamlingID = 1,
-    #                                AnstrTyp = metadata$Metod,
-    #                                AnstrPlats = metadata$loc_name,
-    #                                AnstrDatumStart = metadata$startdate,
-    #                                AnstrDatumSlut = metadata$enddate,
-    #                                AnstrS99TM_N_1 = metadata$N_coord,
-    #                                AnstrS99TM_E_1 = metadata$E_coord,
-    #                                Märkning = metadata$Märkning,
-    #                                SignAnstr = metadata$Signatur
-    #     )
-    #     ###
-    #     
-    # 
-    #     
-    #     Individ <- data.frame(IndividID = 1:nrow(fishdata),
-    #                           InsamlingId = 1,
-    #                           AnsträngningID = 1,
-    #                           FångstDatum = format(fishdata$date_time, "%Y-%m-%d"),
-    #                           FångstTid = format(fishdata$date_time, "%H:%M"),
-    #                           Art = fishdata$species,
-    #                           Åldersprov = ifelse(is.na(fishdata$genid), 'Nej', 'Ja'),
-    #                           Provkod = fishdata$genid,
-    #                           Längd1 = fishdata$length,
-    #                           Vikt1 = fishdata$weight,
-    #                           FångstTyp = to_FangstTyp(fishdata$event),
-    #                           Stadium = fishdata$smoltstat,
-    #                           MärkeNr = as.character(fishdata$pittag),
-    #                           Märkning = ifelse(is.na(fishdata$pittag),NA, metadata$Märkning),
-    #                           SignIndivid = metadata$contact,
-    #                           AnmIndivid = fishdata$comment
-    #     )
-    #     
-    #     write.csv2(Insamling,
-    #                file =  "Insamling.csv",
-    #                na = '',
-    #                row.names = FALSE,
-    #                fileEncoding = 'Latin1')
-    #     write.csv2(Ansträngning,
-    #                file =  "Ansträngning.csv",
-    #                na = '',
-    #                row.names = FALSE,
-    #                fileEncoding = 'Latin1')
-    #     write.csv2(Individ,
-    #                file =  "Individ.csv",
-    #                na = '',
-    #                row.names = FALSE,
-    #                fileEncoding = 'Latin1')
-    #     outfiles <- c('Insamling.csv', 'Ansträngning.csv', 'Individ.csv')
-    #     if (input$do_envdata) {
-    #       envdata <- read_envdata(input$file1$datapath)
-    #       Temperatur <- data.frame(TempID = 1:nrow(envdata),
-    #                                InsamlingID = 1,
-    #                                MätDatum = envdata$date,
-    #                                Tempbotten = envdata$w_temp,
-    #                                Vattennivå = envdata$w_level)
-    #       #        Vattennivå = envdata$w_level * 100)
-    #       write.csv2(Temperatur,
-    #                  file =  "Temperatur.csv",
-    #                  na = '',
-    #                  row.names = FALSE,
-    #                  fileEncoding = 'Latin1')
-    #       outfiles <- c(outfiles, 'Temperatur.csv')
-    #     }
-    #     
-    #     zip(zipfile = file, outfiles)
-    #     setwd(odir)
-    #   },
-    #   contentType = "application/zip"
-    # ) # End output$zipfile
-
+ 
     output$XLSXfile <- downloadHandler(
       filename = function() {paste0(tools::file_path_sans_ext(input$file1$name),
                                     "_sötebasen.xlsx")},
