@@ -44,12 +44,21 @@ hex2dec <- function(tags) {
 #' @return character vector of tags in decimal format
 #' 
 dec2hex <- function(tags) {
-  parts <- strsplit(tags, "\\.")
+  if (grepl(tags[1], pattern = "\\.")) { # We assume that all tags are formated either with or without "."
+    tags <- ifelse(is.na(tags), "000.000000000000", tags)
+    parts <- strsplit(tags, "\\.") }
+  else {
+    tags <- ifelse(is.na(tags), "000000000000000", tags)
+    parts <- lapply(1:length(tags), function(x) {
+      return(c(substr(tags[x], start = 1, stop = 3),
+               substr(tags[x], start = 4, stop = nchar(tags[x]))))})
+  }
   res <- sapply(parts, function(x) {
-    p1 <- sprintf("%X", as.numeric(x[1]))
+    p1 <- sprintf("%03X", as.numeric(x[1]))
     p2 <- sprintf("%010X", as.numeric(x[2])) # Pad with space may be platform dependent
     paste(p1, p2, sep='.')
   })
+  res <- ifelse(res == "000.0000000000", NA, res)
   return(res)
 }
 
