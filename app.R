@@ -145,11 +145,14 @@ shinyApp(
                                    SignAnstr = metadata$Signatur
         )
         ###
+        ## Assume that catch_time == "00:00" equals missing time and set time to NA.
+        catch_time <- format(fishdata$date_time, "%H:%M")
+        catch_time <- ifelse(catch_time == "00:00", NA, catch_time)
         Individ <- data.frame(IndividID = 1:nrow(fishdata),
                               InsamlingId = 1,
                               AnsträngningID = 1,
                               FångstDatum = format(fishdata$date_time, "%Y-%m-%d"),
-                              FångstTid = format(fishdata$date_time, "%H:%M"),
+                              FångstTid = catch_time,
                               Art = fishdata$species,
                               Åldersprov = ifelse(is.na(fishdata$genid), 'Nej', 'Ja'),
                               Provkod = fishdata$genid,
