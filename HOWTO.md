@@ -3,8 +3,8 @@ title: "Manual Smoltreg2Sotebasen"
 author: "Anders Kagervall"
 date: "15 oktober 2018"
 output:
-  html_document: default
   word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}

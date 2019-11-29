@@ -29,10 +29,16 @@ fulton <- function(w, l){
 hex2dec <- function(tags) {
   parts <- strsplit(tags, "\\.")
   res <- sapply(parts, function(x) {
+    x[is.na(x)] <- 0
+    if (is.na(x[2])) {
+      x[2] <- 0
+    }
     p1 <- strtoi(paste("0x", x[1], sep=""))
     p2 <- strtoi(paste("0x", x[2], sep=""))
-    paste(p1, p2, sep='.')
+    sprintf("%03d.%012d", p1, p2)
+#    paste(p1, p2, sep='.')
   })
+  res <- ifelse(res == "000.000000000000", NA, res)
   return(res)
 }
 
