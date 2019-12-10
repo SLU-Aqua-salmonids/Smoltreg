@@ -58,8 +58,8 @@ shinyApp(
   server = function(input, output) {
     source("config.R", encoding = "UTF-8")
     source("functions.R", encoding = "UTF-8")
-    to_FangstTyp <- function(x) {
-      # Translate event codes to Sötebasens strings for FångstTyp
+    event2Behandling <- function(x) {
+      # Translate event codes to Sötebasens strings for Behandling
       return(as.character(
         factor(x,
                levels = c(UNKNOWN, CAUGHT, MARKED, RECAPTURED, REMOVED),
@@ -118,16 +118,10 @@ shinyApp(
         # Start and stop year (Årtal och Årtal2) are set to the same year.
         Insamling <- data.frame(InsamlingID = 1,
                                 Vatten = metadata$river,
-                                Lokal = metadata$loc_name,
-                                Datum1 = metadata$startdate,
-                                Datum1Osäkerhet = "+ - 1-5 dagar",
-                                Datum2 = metadata$enddate,
-                                Datum2Osäkerhet = "+ - 1-5 dagar",
                                 Årtal = start_year,
                                 Årtal2 = start_year,
                                 Metod = metadata$Metod,
                                 Ansvarig = metadata$Ansvarig,
-                                Fiskare1 = metadata$contact,
                                 Syfte = metadata$Syfte,
                                 Sekretess = "Nej",
                                 Signatur = metadata$Signatur
@@ -148,7 +142,7 @@ shinyApp(
         ## Assume that catch_time == "00:00" equals missing time and set time to NA.
         catch_time <- format(fishdata$date_time, "%H:%M")
         catch_time <- ifelse(catch_time == "00:00", NA, catch_time)
-        Individ <- data.frame(IndividID = 1:nrow(fishdata),
+        Individ <- data.frame(#IndividID = 1:nrow(fishdata),
                               InsamlingId = 1,
                               AnsträngningID = 1,
                               FångstDatum = format(fishdata$date_time, "%Y-%m-%d"),
@@ -158,11 +152,11 @@ shinyApp(
                               Provkod = fishdata$genid,
                               Längd1 = fishdata$length,
                               Vikt1 = fishdata$weight,
-                              FångstTyp = to_FangstTyp(fishdata$event),
+                              Behandling = event2Behandling(fishdata$event),
                               Stadium = fishdata$smoltstat,
                               MärkeNr = as.character(fishdata$pittag),
                               Märkning = ifelse(is.na(fishdata$pittag),NA, metadata$Märkning),
-                              SignIndivid = metadata$contact,
+                              SignIndivid = metadata$Signatur,
                               AnmIndivid = fishdata$comment
         )
         
@@ -170,16 +164,16 @@ shinyApp(
         l <- list(Insamling, Ansträngning, Individ)
         if (input$do_envdata) {
           envdata <- read_envdata(input$file1$datapath)
-          Temperatur <- data.frame(TempID = 1:nrow(envdata),
-                                   InsamlingID = 1,
+          Temperatur <- data.frame(InsamlingID = 1,
                                    MätDatum = envdata$date,
                                    Tempbotten = envdata$w_temp,
-                                   Vattennivå = envdata$w_level)
+                                   Vattennivå = envdata$w_level,
+                                   SignTemp = metadata$Signatur
+                                   )
           sheetnames <- c(sheetnames, 'Temperatur')
           l <- c(l , list(Temperatur))
         }
         names(l) <- sheetnames
-#        openxlsx::write.xlsx(l, file = file)
         writexl::write_xlsx(l, path = file)
         setwd(odir)
       },
