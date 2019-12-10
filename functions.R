@@ -199,16 +199,6 @@ read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
                smoltstat = sp.df[sp.df$pittag == recaptues_id[i],]$smoltstat,
                length = sp.df[sp.df$pittag == recaptues_id[i],]$length,
                weight = sp.df[sp.df$pittag == recaptues_id[i],]$weight)
-
-          # d[d$pittag == recaptues_id[i] & is.na(d$species),]$length <-
-      #   sp.df[sp.df$pittag == recaptues_id[i],]$length
-      # d[d$pittag == recaptues_id[i] & is.na(d$species),]$weight <-
-      #   sp.df[sp.df$pittag == recaptues_id[i],]$weight
-      # d[d$pittag == recaptues_id[i] & is.na(d$species),]$smoltstat <-
-      #   sp.df[sp.df$pittag == recaptues_id[i],]$smoltstat
-      # d[d$pittag == recaptues_id[i] & is.na(d$species),]$species <-
-      #   sp.df[sp.df$pittag == recaptues_id[i],]$species
-      
     }
   }
   return(d)
