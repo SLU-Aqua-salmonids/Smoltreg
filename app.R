@@ -163,7 +163,7 @@ shinyApp(
         sheetnames <- c('Insamling', enc2utf8('Ansträngning'), 'Individ')
         l <- list(Insamling, Ansträngning, Individ)
         if (input$do_envdata) {
-          envdata <- read_envdata(input$file1$datapath)
+          envdata <- read_envdata(input$file1$datapath, metadata$startdate, metadata$enddate)
           Temperatur <- data.frame(InsamlingID = 1,
                                    MätDatum = envdata$date,
                                    Tempbotten = envdata$w_temp,

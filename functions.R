@@ -258,15 +258,17 @@ mean_nooutliers <-  function(x) {
   return(mean(boxplot.stats(x)$stats))
 }
 
-read_envdata <- function(xlsxfile,
+read_envdata <- function(xlsxfile, firstdate, lastdate,
                          sheet1 = "Envlogger_water", sheet2 = "Envlogger_land") {
   sheets <- excel_sheets(xlsxfile)
   if (all(c(sheet1, sheet2) %in% sheets)) { # Are both hobo-sheets there?
     water <- read_hobo(xlsxfile, sheet = sheet1) %>%
       mutate(date_time = strip_time(date_time)) %>%
+      filter(as.Date(date_time) >= firstdate & as.Date(date_time) <= lastdate) %>%
       rename(water_p = pressure, water_t = temp)
     land <- read_hobo(xlsxfile, sheet = sheet2) %>%
       mutate(date_time = strip_time(date_time)) %>%
+      filter(as.Date(date_time) >= firstdate & as.Date(date_time) <= lastdate) %>%
       rename(land_p = pressure, land_t = temp)
     alldata <- water %>% inner_join(land, by="date_time") %>%
       mutate(depth = calc_depth(water_p, land_p, water_t))
@@ -276,9 +278,11 @@ read_envdata <- function(xlsxfile,
       summarise(w_level = round(mean_nooutliers(depth) * 100, 1), # to centimeters
                 w_temp  = round(mean_nooutliers(water_t), 1))
   } else { # Use sheet Miljödata instead
-    per_day <- read_excel(xlsxfile, sheet="Miljödata", skip=1) %>%
-      select(date = 1, w_level = 3, w_temp = 4) %>% # Select by column number
-      mutate(w_level = as.numeric(w_level), w_temp = as.numeric(w_temp))
+##    per_day <- read_excel(xlsxfile, sheet="Miljödata", skip=1) %>%
+##      select(date = 1, w_level = 3, w_temp = 4) %>% # Select by column number
+      per_day <- read_excel(xlsxfile, sheet="Miljödata") %>%
+        select(date = 1, w_level = 2, w_temp = 3) %>% # Select by column number
+        mutate(w_level = as.numeric(w_level), w_temp = as.numeric(w_temp))
   }
   
   return(per_day)
