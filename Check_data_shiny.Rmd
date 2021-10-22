@@ -93,7 +93,7 @@ if (nrow(stab) > 0) {
 ```
 
 ### Genid
-Check that no genid are duplicated. **If a table with fish is printed below, fix the smoltstat and re-run.**
+Check that no genid are duplicated. **If a table with fish is printed below, fix the genid and re-run.**
 
 ```{r genid, echo = FALSE, results='asis'}
 dups <- duplicated(fishdata$genid) & !is.na(fishdata$genid)
@@ -174,7 +174,9 @@ A fish recaptured should always have a mark event before the recapture.
 r.ids <- unique(recap$pittag)
 m.ids <- unique(marked$pittag)
 recap.not.marked <- r.ids[!(r.ids %in% m.ids)]
-not.marked.tab <- fishdata[fishdata$pittag %in% recap.not.marked, ]
+not.marked.tab <- fishdata %>%
+  filter(event == RECAPTURED) %>%
+  filter(pittag %in% recap.not.marked)
 if (nrow(not.marked.tab) > 0) {
   knitr::kable(not.marked.tab, caption = "Recaptured but no marking event")
 } else {
