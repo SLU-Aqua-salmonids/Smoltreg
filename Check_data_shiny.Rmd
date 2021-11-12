@@ -56,7 +56,6 @@ running xlsx2sote.R or you will not get correct data.
 
 ```{r datacheck_format, echo=FALSE, results='asis'}
 ##
-LENGTH_WEIGHT_OK <- TRUE # First assume check will be OK
 cat(paste0("**Checking fish data format in selected columns read from *", params$origName, "*.**\n\n"))
 ##
 #need.date <- fishdata[!is.na(fishdata$pittag),]$date_time # all rows with pittag must hav valid date
@@ -66,9 +65,11 @@ if (any(is.na(as.POSIXct(fishdata$date_time)))) {
   cat("+ Column *date_time* looks OK.\n")
 }
 num.columns <- c("length", "weight")
+LENGTH_WEIGHT_OK <- TRUE # First assume check will be OK
 for (name in num.columns ) {
   if (is.possible.numeric(fishdata[ ,name])) {
-    cat(paste("+ Column *", name, "* is numeric, good.\n", sep = "")) 
+    cat(paste("+ Column *", name, "* is numeric, good.\n", sep = ""))
+    fishdata[ ,name] <- as.numeric(unlist(fishdata[ ,name]))
   } else {
     cat(paste("+ Column *", name, "* is **NOT** numeric, **FIX IT**.\n", sep = ""))
     LENGTH_WEIGHT_OK <- FALSE
