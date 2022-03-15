@@ -108,10 +108,19 @@ impute_date_time <- function(x) {
   return(res)
 }
 
-# Read sheet with meta data -------------------------------------------------------
-read_meta <- function(xlsxfile, sheet = "Metadata" ) {
+# -------------------------------------------------------
+#'  Read sheet with meta data
+#'
+#' @param xlsxfile Name on excel-file following the "Smoltreg"-format 
+#'
+#' @return
+#' A list with variables from sheets "Metadata" and "Metadata2"
+#' @export
+#'
+#' @examples
+read_meta <- function(xlsxfile) {
   sheets <- excel_sheets(xlsxfile)
-  d <- read_excel(xlsxfile, sheet = sheet, col_names = TRUE)
+  d <- readxl::read_excel(xlsxfile, sheet = "Metadata", col_names = TRUE)
   d <- as.data.frame(d)
   d <- remove_empty_rows(d)
   names(d) <- c("river", "loc_name", "dates", "coords", "contact", "email",
@@ -130,7 +139,7 @@ read_meta <- function(xlsxfile, sheet = "Metadata" ) {
              downtime = downtime
   )
   if ("Metadata2" %in% sheets) {
-    d2 <- read_excel(xlsxfile, sheet = "Metadata2")
+    d2 <- readxl::read_excel(xlsxfile, sheet = "Metadata2")
     l2 <- as.list(d2)
     # d2 <- remove_empty_rows(d2)
     # d2[,1] <- gsub(":", "", d2[,1])
@@ -182,12 +191,24 @@ read_meta <- function(xlsxfile, sheet = "Metadata" ) {
 #   return(c(l1, l2))
 # }
 
-# Read sheet with fish data and do some basic cleanup. ------------------------- 
+# read_fish() ------------------------- 
+#'  Read sheet with fish data and do some basic cleanup.
+#'
+#' @param xlsxfile Name on excel-file following the "Smoltreg"-format
+#' @param dummy_tags Vector of character with tags used as dummies that shoud be removed
+#' @param sheet Name of sheet with the fish data. Default = "Fiskdata"
+#' @param date_formats Character vector with DateTime formats that should be tried when reading dates
+#'
+#' @return
+#' A data frame with fishdata from the smolt trap. Basic cleanup done.
+#' @export
+#'
+#' @examples
 read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
                       date_formats = c('%m-%d-%Y %H:%M:%S',
                                        '%Y-%m-%d %H:%M:%S',
                                        '%m/%d/%y.%H:%M:%S')) {
-  d <- read_excel(xlsxfile, sheet = sheet)
+  d <- readxl::read_excel(xlsxfile, sheet = sheet)
   d <- d[, 1:9] # Columns needed for database MUST be  columns 1:9
   names(d) <- c("pittag", "date_time", "species", "smoltstat", "length",
                     "weight", "event", "genid", "comment")
@@ -265,7 +286,7 @@ calc_depth <- function(P_water, P_ref, temp_water) {
 read_hobo <- function(f, sheet, tz="CET") {
   new_names <-  c('date_time', 'pressure', 'temp') #, 'couplerDet',
 #                  'couplerAtt', 'hostConn', 'stopped', 'EOF')
-  d <- read_excel(f, sheet = sheet)
+  d <- readxl::read_excel(f, sheet = sheet)
   names(d) <- new_names
   d$date_time <- as.POSIXct(as.character(d$date_time), tz="CET")
   return(d)
@@ -292,7 +313,7 @@ mean_nooutliers <-  function(x) {
 
 read_envdata <- function(xlsxfile, firstdate, lastdate,
                          sheet1 = "Envlogger_water", sheet2 = "Envlogger_land") {
-  sheets <- excel_sheets(xlsxfile)
+  sheets <- readxl::excel_sheets(xlsxfile)
   if (all(c(sheet1, sheet2) %in% sheets)) { # Are both hobo-sheets there?
     water <- read_hobo(xlsxfile, sheet = sheet1) %>%
       mutate(date_time = strip_time(date_time)) %>%
@@ -312,7 +333,7 @@ read_envdata <- function(xlsxfile, firstdate, lastdate,
   } else { # Use sheet Miljödata instead
 ##    per_day <- read_excel(xlsxfile, sheet="Miljödata", skip=1) %>%
 ##      select(date = 1, w_level = 3, w_temp = 4) %>% # Select by column number
-      per_day <- read_excel(xlsxfile, sheet="Miljödata") %>%
+      per_day <- readxl::read_excel(xlsxfile, sheet="Miljödata") %>%
         select(date = 1, w_level = 2, w_temp = 3) %>% # Select by column number
         mutate(w_level = as.numeric(w_level), w_temp = as.numeric(w_temp))
   }
