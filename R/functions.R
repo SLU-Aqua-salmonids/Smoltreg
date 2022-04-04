@@ -1,100 +1,19 @@
 ##
-library(dplyr)
-library(magrittr)
-library(readxl)
+#library(dplyr)
+#library(magrittr)
+#library(readxl)
 
-# Misc functions ----------------------------------------------------------------
-#' Fulton condition factor
+##
+#' impute_date_time
+#' 
+#' Impute a time vector with dates using "last observation carried forward"
+#' if package imputeTS is installed
 #'
-#' Return Fulton's condition factor 
-#' @param w Weight in grams
-#' @param l Length in mm
+#' @param x Vector with dates
 #'
-#' @return
-#' A numeric
+#' @return imputed vector with dates
+#' @export
 #'
-fulton <- function(w, l){
-  l <- l / 10 # Convert length to cm
-  k <- 100 * (w / l^3)
-  return(k)
-}
-
-#' Hex to dec pittag string
-#' 
-#' Convert vector of pittags in hex to dec
-#' @param tags character vector of tags in hex format
-#' 
-#' @return character vector of tags in decimal format
-#' 
-hex2dec <- function(tags) {
-  parts <- strsplit(tags, "\\.")
-  res <- sapply(parts, function(x) {
-    x[is.na(x)] <- 0
-    if (is.na(x[2])) {
-      x[2] <- 0
-    }
-    p1 <- strtoi(paste("0x", x[1], sep=""))
-    p2 <- strtoi(paste("0x", x[2], sep=""))
-    sprintf("%03d.%012d", p1, p2)
-#    paste(p1, p2, sep='.')
-  })
-  res <- ifelse(res == "000.000000000000", NA, res)
-  return(res)
-}
-
-#' Decimal to hex pittag string
-#' 
-#' Convert vector of pittags in dec to hex
-#' @param tags character vector of tags in hex format
-#' 
-#' @return character vector of tags in decimal format
-#' 
-dec2hex <- function(tags) {
-  if (grepl(tags[1], pattern = "\\.")) { # We assume that all tags are formated either with or without "."
-    tags <- ifelse(is.na(tags), "000.000000000000", tags)
-    parts <- strsplit(tags, "\\.") }
-  else {
-    tags <- ifelse(is.na(tags), "000000000000000", tags)
-    parts <- lapply(1:length(tags), function(x) {
-      return(c(substr(tags[x], start = 1, stop = 3),
-               substr(tags[x], start = 4, stop = nchar(tags[x]))))})
-  }
-  res <- sapply(parts, function(x) {
-    p1 <- sprintf("%03X", as.numeric(x[1]))
-    p2 <- sprintf("%010X", as.numeric(x[2])) # Pad with space may be platform dependent
-    paste(p1, p2, sep='.')
-  })
-  res <- ifelse(res == "000.0000000000", NA, res)
-  return(res)
-}
-
-##
-remove_empty_rows <- function(df) {
-  all.NA.idx <- which(apply(df,1,function(x)all(is.na(x))))
-  
-  if (length(all.NA.idx) > 0) {
-    df <- df[-all.NA.idx,] # Rem rows with all cols == NA
-  }
-  return(df)
-}
-##
-which_coerce_NA <- function(x, allow.orig.NA = TRUE, orig.NA = -989898) {
-  ## Return index of the elements that would coerce to NA in a vector  
-  if (allow.orig.NA) x[is.na(x)] <- orig.NA
-  return(which(is.na(as.numeric(x))))
-}
-##
-is.possible.numeric <- function(x) {
-  ## Checks if a vector either is numeric or can be coerced to numeric without introducing NA
-  x <- as.data.frame(x)[,1] # UGLY but tibble mess things up
-  if (is.numeric(x)) return(TRUE)
-  if (length(which_coerce_NA(x) > 0)) {
-    return(FALSE)
-  } else {
-    return(TRUE)
-  }
-}
-##
 impute_date_time <- function(x) {
   if (!require(imputeTS)) {
     warning("Library imputeTS missing. Can not impute date.")
@@ -102,7 +21,7 @@ impute_date_time <- function(x) {
   }
   res <- as.character( # Back to character
     as.POSIXct( # Back to POSIX time
-      na_locf( # Impute with Last Obs Carried Forward
+      imputeTS::na_locf( # Impute with Last Obs Carried Forward
         as.numeric( # Convert the date_time to number (secs since origin)
           as.POSIXct(x))), origin = "1970-01-01")) # Convert date_time to POSIXct
   return(res)
@@ -117,9 +36,8 @@ impute_date_time <- function(x) {
 #' A list with variables from sheets "Metadata" and "Metadata2"
 #' @export
 #'
-#' @examples
 read_meta <- function(xlsxfile) {
-  sheets <- excel_sheets(xlsxfile)
+  sheets <- readxl::excel_sheets(xlsxfile)
   d <- readxl::read_excel(xlsxfile, sheet = "Metadata", col_names = TRUE)
   d <- as.data.frame(d)
   d <- remove_empty_rows(d)
@@ -203,7 +121,6 @@ read_meta <- function(xlsxfile) {
 #' A data frame with fishdata from the smolt trap. Basic cleanup done.
 #' @export
 #'
-#' @examples
 read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
                       date_formats = c('%m-%d-%Y %H:%M:%S',
                                        '%Y-%m-%d %H:%M:%S',
@@ -224,7 +141,7 @@ read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
 
   if (any(is.na(d$event))) {
     # If event is NA set it to UNKNOWN
-    d[which(is.na(d$event)),]$event <- UNKNOWN
+    d[which(is.na(d$event)),]$event <- Smoltreg_event$UNKNOWN
   }
   if (any(d$pittag %in% dummy_tags)) {
     # Unmarked fish should not have a pittag, remove them (they are scanned dummytags)
@@ -241,14 +158,14 @@ read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
     d$date_time <- impute_date_time(d$date_time)
   }
   d$date_time <- as.POSIXct(d$date_time)
-  recaptues_id <- d[d$event == RECAPTURED & is.na(d$species), ]$pittag
+  recaptues_id <- d[d$event == Smoltreg_event$RECAPTURED & is.na(d$species), ]$pittag
   recaptues_id <- unique(recaptues_id) # Filter duplicates (maybe not the right thing to do)
   if (length(recaptues_id > 0)) { # Create a table with the data recorded for pittag at marking
-    sp.df <- d[d$event == MARKED & d$pittag %in% recaptues_id,
+    sp.df <- d[d$event == Smoltreg_event$MARKED & d$pittag %in% recaptues_id,
                c("pittag", "species", "length", "weight", "smoltstat")] # Columns to extract
     for (i in seq_along(recaptues_id)){ # Set missing species to species from MARK event 
-      d[!is.na(d$pittag) & d$pittag == recaptues_id[i] & is.na(d$species), ] %<>%
-        mutate(species = sp.df[sp.df$pittag == recaptues_id[i],]$species,
+      d[!is.na(d$pittag) & d$pittag == recaptues_id[i] & is.na(d$species), ] %<>% # Assignment pipe, see magrittr
+        dplyr::mutate(species = sp.df[sp.df$pittag == recaptues_id[i],]$species,
                smoltstat = sp.df[sp.df$pittag == recaptues_id[i],]$smoltstat,
                length = sp.df[sp.df$pittag == recaptues_id[i],]$length,
                weight = sp.df[sp.df$pittag == recaptues_id[i],]$weight)
@@ -258,31 +175,7 @@ read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
 }
 
 # Read environmetal data -----------------------------------------------------------
-water_density <- function(temp_water) {
-  # Return water density at water temp temp_water
-  # Borrowed from https://github.com/GLEON/rLakeAnalyzer/blob/master/R/water.density.R
-  return((1000 * 
-            (1 -(temp_water+288.9414) *
-               (temp_water-3.9863)^2/(508929.2*(temp_water+68.12963)))))
-}
 
-#´ Calculate water level 
-#´
-#´ Calculate water level from barimetric pressure at meassured bottom,
-#´ a refererence air pressure and water temperature
-#' @param P_water pressure in water in kPa
-#' @param P_ref reference air pressure in kPa
-#' @param temp_water water temperature in degrees Celsius
-#'
-#' @return
-#' A numeric. water level in meters
-#
-calc_depth <- function(P_water, P_ref, temp_water) {
-  
-  g <-  9.80665
-  rho <- water_density(temp_water)
-  depth  <- (P_water*1000 - P_ref*1000) / (rho * g) 
-}
 read_hobo <- function(f, sheet, tz="CET") {
   new_names <-  c('date_time', 'pressure', 'temp') #, 'couplerDet',
 #                  'couplerAtt', 'hostConn', 'stopped', 'EOF')
@@ -292,50 +185,47 @@ read_hobo <- function(f, sheet, tz="CET") {
   return(d)
 }
 
-#' strip_time set components minutes and seconds to zero
+
+
+#' Read temp and pressure data
+#' 
+#' Read data with water temperature and pressure + reference pressure in air.
+#' Calculate mean water depth and water temperature per day.
 #'
-#' @param t a verctor of POSTIXct
+#' @param xlsxfile Name of excel file
+#' @param firstdate Date for first date in returned time series
+#' @param lastdate  Date for last date in returned time series
+#' @param sheet1 Name of sheet with data from logger in water
+#' @param sheet2  Name of sheet with data from logger in air
 #'
-#' @return a vector of POSIXct
+#' @return
 #' @export
 #'
-#' @examples
-strip_time <- function(t) {
-  lt <- as.POSIXlt(t)
-  lt[, "sec"] <- 0
-  lt[, "min"] <- 0
-  return(as.POSIXct(lt))
-}
-mean_nooutliers <-  function(x) {
-  # Use boxplot.stats to remove outliers and return mean of remaining data
-  return(mean(boxplot.stats(x)$stats))
-}
-
 read_envdata <- function(xlsxfile, firstdate, lastdate,
                          sheet1 = "Envlogger_water", sheet2 = "Envlogger_land") {
   sheets <- readxl::excel_sheets(xlsxfile)
   if (all(c(sheet1, sheet2) %in% sheets)) { # Are both hobo-sheets there?
     water <- read_hobo(xlsxfile, sheet = sheet1) %>%
-      mutate(date_time = strip_time(date_time)) %>%
-      filter(as.Date(date_time) >= firstdate & as.Date(date_time) <= lastdate) %>%
-      rename(water_p = pressure, water_t = temp)
+      dplyr::mutate(date_time = strip_time(date_time)) %>%
+      dplyr::filter(as.Date(date_time) >= firstdate & as.Date(date_time) <= lastdate) %>%
+      dplyr::rename(water_p = pressure, water_t = temp)
     land <- read_hobo(xlsxfile, sheet = sheet2) %>%
-      mutate(date_time = strip_time(date_time)) %>%
-      filter(as.Date(date_time) >= firstdate & as.Date(date_time) <= lastdate) %>%
-      rename(land_p = pressure, land_t = temp)
-    alldata <- water %>% inner_join(land, by="date_time") %>%
-      mutate(depth = calc_depth(water_p, land_p, water_t))
+      dplyr::mutate(date_time = strip_time(date_time)) %>%
+      dplyr::filter(as.Date(date_time) >= firstdate & as.Date(date_time) <= lastdate) %>%
+      dplyr::rename(land_p = pressure, land_t = temp)
+    alldata <- water %>% dplyr::inner_join(land, by="date_time") %>%
+      dplyr::mutate(depth = calc_depth(water_p, land_p, water_t))
     per_day <- alldata %>%
-      mutate(date = as.Date(date_time)) %>%
-      group_by(date) %>%
-      summarise(w_level = round(mean_nooutliers(depth) * 100, 1), # to centimeters
+      dplyr::mutate(date = as.Date(date_time)) %>%
+      dplyr::group_by(date) %>%
+      dplyr::summarise(w_level = round(mean_nooutliers(depth) * 100, 1), # to centimeters
                 w_temp  = round(mean_nooutliers(water_t), 1))
   } else { # Use sheet Miljödata instead
 ##    per_day <- read_excel(xlsxfile, sheet="Miljödata", skip=1) %>%
-##      select(date = 1, w_level = 3, w_temp = 4) %>% # Select by column number
+##      dplyr::select(date = 1, w_level = 3, w_temp = 4) %>% # Select by column number
       per_day <- readxl::read_excel(xlsxfile, sheet="Miljödata") %>%
-        select(date = 1, w_level = 2, w_temp = 3) %>% # Select by column number
-        mutate(w_level = as.numeric(w_level), w_temp = as.numeric(w_temp))
+        dplyr::select(date = 1, w_level = 2, w_temp = 3) %>% # Select by column number
+        dplyr::mutate(w_level = as.numeric(w_level), w_temp = as.numeric(w_temp))
   }
   
   return(per_day)
@@ -343,12 +233,12 @@ read_envdata <- function(xlsxfile, firstdate, lastdate,
 
 
 # Save data to SQLite ----------------------------------------------------------------
-  save_to_sqlite <- function(dbname, table, x, overwrite = TRUE) {
-    if (!require(DBI) | !require(RSQLite)) {
-      warning("Missing package DBI and/or RSQLite. Can not save to local database.")
-    }
-    mydb <- dbConnect(RSQLite::SQLite(), dbname)
-    dbWriteTable(mydb, table, as.data.frame(x), overwrite = overwrite)
-    dbDisconnect(mydb)
-  }
-
+  # save_to_sqlite <- function(dbname, table, x, overwrite = TRUE) {
+  #   if (!require(DBI) | !require(RSQLite)) {
+  #     warning("Missing package DBI and/or RSQLite. Can not save to local database.")
+  #   }
+  #   mydb <- dbConnect(RSQLite::SQLite(), dbname)
+  #   dbWriteTable(mydb, table, as.data.frame(x), overwrite = overwrite)
+  #   dbDisconnect(mydb)
+  # }
+  # 
