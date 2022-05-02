@@ -100,26 +100,6 @@ which_coerce_NA <- function(x, allow.orig.NA = TRUE, orig.NA = -989898) {
   return(which(is.na(as.numeric(x))))
 }
 
-##
-#' is.possible.numeric
-#'
-#' Checks if a vector either is numeric or can be coerced to numeric without introducing NA
-#' 
-#' @param x 
-#'
-#' @return
-#' Returns TRUE if all items can be coerced as numeric
-#'
-is.possible.numeric <- function(x) {
-  x <- as.data.frame(x)[,1] # UGLY but tibble mess things up
-  if (is.numeric(x)) return(TRUE)
-  if (length(which_coerce_NA(x) > 0)) {
-    return(FALSE)
-  } else {
-    return(TRUE)
-  }
-}
-
 #' strip_time set components minutes and seconds to zero
 #'
 #' @param t a vector that can be coerced to time with as.POSIXlt
