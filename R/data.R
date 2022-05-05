@@ -12,3 +12,9 @@
 #' }
 #'
 "Smoltreg_event"
+
+#' allowed_species
+#' 
+#' A vector of caharcter containing all species namnes that are allowed in Sötebasen.
+#' 
+"allowed_species"

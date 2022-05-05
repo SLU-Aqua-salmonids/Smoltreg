@@ -7,3 +7,8 @@ Smoltreg_event <- data.frame(
   RECAPTURED = 3,
   REMOVED = 4)
 usethis::use_data(Smoltreg_event, overwrite = TRUE)
+##
+# List of allowed spcies from Sötebasen
+allowed_species <- read.table("./data-raw/allowed_species.txt",
+                              sep="\t", encoding="UTF-8")[,1]
+usethis::use_data(allowed_species, overwrite = TRUE)
