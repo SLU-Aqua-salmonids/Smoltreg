@@ -24,10 +24,9 @@ mk_species_table <- function(fish) {
 }
 
 mk_unknown_table <- function(fish) {
-  allowed_species <- read.table(system.file("extdata", "allowed_species.txt", package = "Smoltreg"),
-                                sep="\t", encoding="UTF-8")[,1]
   return(
     as.data.frame(fish[!fish$species %in% allowed_species &
                          fish$event != Smoltreg_event$RECAPTURED,])
   )
 }
+
