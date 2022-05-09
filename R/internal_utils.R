@@ -95,9 +95,12 @@ remove_empty_rows <- function(df) {
 #' Return index of the elements that would coerce to NA in a vector
 #'
 which_coerce_NA <- function(x, allow.orig.NA = TRUE, orig.NA = -989898) {
-    
+  defaultW <- getOption("warn")
+  options(warn = -1)
   if (allow.orig.NA) x[is.na(x)] <- orig.NA
-  return(which(is.na(as.numeric(x))))
+  res <- which(is.na(as.numeric(x)))
+  options(warn = defaultW)
+  return(res)
 }
 
 #' strip_time set components minutes and seconds to zero
