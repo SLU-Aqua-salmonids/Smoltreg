@@ -5,7 +5,7 @@
 
 
 ##
-#' is.possible.numeric
+#' can_coerce_numeric
 #'
 #' Checks if a vector either is numeric or can be coerced to numeric without introducing NA
 #' 
@@ -15,7 +15,7 @@
 #' Returns TRUE if all items can be coerced as numeric
 #'
 #' @export
-is.possible.numeric <- function(x) {
+can_coerce_numeric <- function(x) {
   x <- as.data.frame(x)[,1] # UGLY but tibble mess things up
   if (is.numeric(x)) return(TRUE)
   if (length(which_coerce_NA(x) > 0)) {
