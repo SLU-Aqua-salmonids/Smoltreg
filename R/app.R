@@ -15,25 +15,40 @@ smoltregApp <- function() {
        actionButton("checkdates", "Check dates"),
        actionButton("checknumeric", "Check numeric"),
        actionButton("checksmoltstat", "Check smoltstat"),
-       actionButton("checkgenid", "Check genid")
+       actionButton("checkgenid", "Check genid"),
+       actionButton("checkevents", "Check events"),
+       actionButton("checkpittags", "Check PIT tags")
       ),
       
       mainPanel(
         h1("Smoltreg file"),
+        p("Summary of content in file:"),
         tableOutput("file1"),
         hr(),
+        p("List of species:"),
         tableOutput("listspecies"),
         hr(),
+        p("Unknown species registered:"),
         tableOutput("unknownspecies"),
         hr(),
+        p("Test if the date column format seems OK:"),
         textOutput("checkdates"),
         hr(),
+        p("Test if numeric columns in file seems OK:"),
         tableOutput("checknumeric"),
         hr(),
+        p("Test that columns SMOLTSTATUS have valid data:"),
         tableOutput("checksmoltstat"),
         hr(),
-        tableOutput("checkgenid")
-        )
+        p("Search for duplicated values in GENID:"),
+        tableOutput("checkgenid"),
+        hr(),
+        p("List number of events. If you have UNKNOWNs check why."),
+        tableOutput("checkevents"),
+        hr(),
+        p("Check that both MARKED and RECAPTURED have pittags"),
+        tableOutput("checkpittags")
+      )
       )
     )
 
@@ -128,6 +143,30 @@ smoltregApp <- function() {
         dupstable <- data.frame("No fish with duplicated genid. :-)") 
       }
       return(dupstable)
+    })
+
+    output$checkevents <- renderTable({
+      if (input$checkevents == 0 | is_odd(input$checkevents)) {
+        return('Click "Check event" button')
+      }
+      events <- factor(fishdata()$event,
+                       c(Smoltreg_event[1, ]),
+                       labels = c(names(Smoltreg_event)))
+      eventtable <- as.data.frame(table(events))
+      return(eventtable)
+    })
+    
+    output$checkpittags <- renderTable({
+      if (input$checkpittags == 0 | is_odd(input$checkpittags)) {
+        return('Click "Check pittags" button')
+      }
+      etab <- fishdata() %>%
+        filter(event %in% c(Smoltreg_event$MARKED, Smoltreg_event$RECAPTURED)) %>%
+        filter(is.na(pittag))
+      if (nrow(etab) == 0) {
+        etab <- data.frame("No marked or recaptured fish without pittag. :-)")
+      }
+      return(etab)
     })
     
     output$XLSXfile <- downloadHandler(
