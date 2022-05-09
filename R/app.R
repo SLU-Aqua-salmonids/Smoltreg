@@ -1,4 +1,5 @@
 smoltregApp <- function() {
+  library(shiny)
   # GUI ---------------------------------------------------------------------
   ui <- fluidPage(
     titlePanel("Smoltreg data checker and converter."),
@@ -10,7 +11,11 @@ smoltregApp <- function() {
                   accept = c("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             "application/vnd.ms-excel")),
        actionButton("listspecies", "List species"),
-       actionButton("unknownspecies", "Unknown species")
+       actionButton("unknownspecies", "Unknown species"),
+       actionButton("checkdates", "Check dates"),
+       actionButton("checknumeric", "Check numeric"),
+       actionButton("checksmoltstat", "Check smoltstat"),
+       actionButton("checkgenid", "Check genid")
       ),
       
       mainPanel(
@@ -19,8 +24,15 @@ smoltregApp <- function() {
         hr(),
         tableOutput("listspecies"),
         hr(),
-        tableOutput("unknownspecies")
-        
+        tableOutput("unknownspecies"),
+        hr(),
+        textOutput("checkdates"),
+        hr(),
+        tableOutput("checknumeric"),
+        hr(),
+        tableOutput("checksmoltstat"),
+        hr(),
+        tableOutput("checkgenid")
         )
       )
     )
@@ -64,6 +76,58 @@ smoltregApp <- function() {
       }
       res <- mk_unknown_table(fishdata())
       return(res)
+    })
+    
+    output$checkdates <- renderText({
+      if (input$checkdates == 0 | is_odd(input$checkdates)) {
+        return('Click "Check dates" button')
+      }
+      if (any(is.na(as.POSIXct(fishdata()$date_time)))) {
+        return("+ Column *date_time* contains data that does not convert to a date, **FIX IT**.\n")
+      } else {
+        return("+ Column *date_time* looks OK.\n")
+      }
+    })
+ 
+    output$checknumeric <- renderTable({
+      if (input$checknumeric == 0 | is_odd(input$checknumeric)) {
+        return('Click "Check numeric" button')
+      } else {
+        res <- NULL
+        for (colname in c("length", "weight")) {
+          res <- rbind(res,
+                data.frame(Column = colname,
+                           Numeric = can_coerce_numeric(fishdata()[, colname])))
+        }
+      }
+      return(res)
+    })
+    
+    output$checksmoltstat <- renderTable({
+      if (input$checksmoltstat == 0 | is_odd(input$checksmoltstat)) {
+        return('Click "Check smoltstat" button')
+      }
+        stattab <- fishdata() %>%
+        filter(!is.na(smoltstat)) %>%
+        filter(!(smoltstat %in% c('S0', 'S1', 'S2', 'S3')))
+      if (nrow(stattab) == 0) {
+        return('Column "smoltstat" OK')
+      } else {
+        return(stattab)
+      }
+    })
+    
+    output$checkgenid <- renderTable({
+      if (input$checkgenid == 0 | is_odd(input$checkgenid)) {
+        return('Click "Check genid" button')
+      }
+      dups <- duplicated(fishdata()$genid) & !is.na(fishdata()$genid)
+      if (any(dups)) {
+        dupstable <- fishdata[dups,]
+      } else {
+        dupstable <- data.frame("No fish with duplicated genid. :-)") 
+      }
+      return(dupstable)
     })
     
     output$XLSXfile <- downloadHandler(
