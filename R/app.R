@@ -1,64 +1,55 @@
 smoltregApp <- function() {
   library(shiny)
   # GUI ---------------------------------------------------------------------
-  ui <- fluidPage(
-    titlePanel("Smoltreg data checker and converter."),
-    sidebarLayout(
-      sidebarPanel(
-        p("Choose input file:"),
-       #             a(href = "HOWTO.html", "HOWTO!"),
-        fileInput("file1", "Upload Smoltreg file",
-                  accept = c("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "application/vnd.ms-excel")),
-       actionButton("listspecies", "List species"),
-       actionButton("unknownspecies", "Unknown species"),
-       actionButton("checkdates", "Check dates"),
-       actionButton("checknumeric", "Check numeric"),
-       actionButton("checksmoltstat", "Check smoltstat"),
-       actionButton("checkgenid", "Check genid"),
-       actionButton("checkevents", "Check events"),
-       actionButton("checkpittags", "Check PIT tags")
-      ),
-      
-      mainPanel(
-        h1("Smoltreg file"),
-        p("Summary of content in file:"),
-        tableOutput("file1"),
-        hr(),
-        p("List of species:"),
-        tableOutput("listspecies"),
-        hr(),
-        p("Unknown species registered:"),
-        tableOutput("unknownspecies"),
-        hr(),
-        p("Test if the date column format seems OK:"),
-        textOutput("checkdates"),
-        hr(),
-        p("Test if numeric columns in file seems OK:"),
-        tableOutput("checknumeric"),
-        hr(),
-        p("Test that columns SMOLTSTATUS have valid data:"),
-        tableOutput("checksmoltstat"),
-        hr(),
-        p("Search for duplicated values in GENID:"),
-        tableOutput("checkgenid"),
-        hr(),
-        p("List number of events. If you have UNKNOWNs check why."),
-        tableOutput("checkevents"),
-        hr(),
-        p("Check that both MARKED and RECAPTURED have pittags"),
-        tableOutput("checkpittags")
-      )
-      )
-    )
-
+  ui <- fluidPage(title ="Smoltreg data checker and converter.",
+    fluidRow(
+      column(width = 12,
+             h1("Smoltreg data checker and converter."),
+             p("Check your Smoltreg file by running each of the tests below.
+               When all test pass use the last button to generate a file suitable
+               for upload to Sötebasen."))
+    ),
+    fluidRow(
+      column(width = 4,
+             fileInput("file1", "Upload Smoltreg file",
+                       accept = c("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                  "application/vnd.ms-excel"))),
+      column(width = 8, tableOutput("file1"))),
+    fluidRow(column(width = 4, actionButton("listspecies", "List species")),
+             column(width = 8, tableOutput("listspecies"))),
+    fluidRow(column(width = 4, actionButton("unknownspecies", "Unknown species")),
+             column(width = 8, tableOutput("unknownspecies"))),
+    fluidRow(column(width = 4, actionButton("checkdates", "Check dates")),
+             column(width = 8, tableOutput("checkdates"))),
+    fluidRow(column(width = 4, actionButton("checknumeric", "Check numeric")),
+             column(width = 8, tableOutput("checknumeric"))),
+    fluidRow(column(width = 4, actionButton("checksmoltstat", "Check smoltstat")),
+             column(width = 8, tableOutput("checksmoltstat"))),
+    fluidRow(column(width = 4, actionButton("checkgenid", "Check genid")),
+             column(width = 8, tableOutput("checkgenid"))),
+    fluidRow(column(width = 4, actionButton("checkevents", "Check events")),
+             column(width = 8, tableOutput("checkevents"))),
+    fluidRow(column(width = 4, actionButton("checkpittags", "Check PIT tags")),
+             column(width = 8, tableOutput("checkpittags"))),
+    fluidRow(column(width = 4, actionButton("checkduppittag", "Check duplicated PIT")),
+             column(width = 8, tableOutput("checkduppittag"))),
+    fluidRow(column(width = 4, actionButton("checkrecapture", "Check unMARKED RECAPTURE events")),
+             column(width = 8, tableOutput("checkrecapture"))),
+    fluidRow(column(width = 4, actionButton("checkdiffspecies", "Check same species")),
+             column(width = 8, tableOutput("checkdiffspecies"))),
+    fluidRow(column(width = 4, actionButton("checkfulton", "List fulton outliers")),
+             column(width = 8, tableOutput("checkfulton")))
     
-  
+  )
+
   # Server ------------------------------------------------------------------------
     server <- function(input, output) {
     ##    source("config.R", encoding = "UTF-8")
     ##    source("functions.R", encoding = "UTF-8")
     require(Smoltreg)
+    as_result_df <- function(x) {
+      return(data.frame(Result = x))
+    }
     metadata <- reactive(read_meta(input$file1$datapath))
     fishdata <- reactive(read_fish(input$file1$datapath,
                                    dummy_tags = metadata()$dummy_tags))
@@ -79,7 +70,7 @@ smoltregApp <- function() {
     
     output$listspecies <- renderTable({
       if (input$listspecies == 0 | is_odd(input$listspecies)) {
-        return('Click "List species" button')
+        return(as_result_df('Click "List species" button'))
       }
         res <- mk_species_table(fishdata())
         return(res)
@@ -87,26 +78,27 @@ smoltregApp <- function() {
     
     output$unknownspecies <- renderTable({
       if (input$unknownspecies == 0 | is_odd(input$unknownspecies)) {
-        return('Click "Unknown species" button')
+        return(as_result_df('Click "Unknown species" button'))
       }
       res <- mk_unknown_table(fishdata())
       return(res)
     })
     
-    output$checkdates <- renderText({
+    output$checkdates <- renderTable({
       if (input$checkdates == 0 | is_odd(input$checkdates)) {
-        return('Click "Check dates" button')
+        return(as_result_df('Click "Check dates" button to test date_time column format'))
       }
       if (any(is.na(as.POSIXct(fishdata()$date_time)))) {
-        return("+ Column *date_time* contains data that does not convert to a date, **FIX IT**.\n")
+        res <- as_result_df("+ Column *date_time* contains data that does not convert to a date, **FIX IT**.")
       } else {
-        return("+ Column *date_time* looks OK.\n")
+        res <- as_result_df("+ Column *date_time* looks OK.\n")
       }
+      return(res)
     })
  
     output$checknumeric <- renderTable({
       if (input$checknumeric == 0 | is_odd(input$checknumeric)) {
-        return('Click "Check numeric" button')
+        return(as_result_df('Click "Check numeric" button'))
       } else {
         res <- NULL
         for (colname in c("length", "weight")) {
@@ -120,13 +112,13 @@ smoltregApp <- function() {
     
     output$checksmoltstat <- renderTable({
       if (input$checksmoltstat == 0 | is_odd(input$checksmoltstat)) {
-        return('Click "Check smoltstat" button')
+        return(as_result_df('Click "Check smoltstat" button'))
       }
-        stattab <- fishdata() %>%
-        filter(!is.na(smoltstat)) %>%
-        filter(!(smoltstat %in% c('S0', 'S1', 'S2', 'S3')))
+      stattab <- fishdata() %>%
+        dplyr::filter(!is.na(smoltstat)) %>%
+        dplyr::filter(!(smoltstat %in% c('S0', 'S1', 'S2', 'S3')))
       if (nrow(stattab) == 0) {
-        return('Column "smoltstat" OK')
+        return(as_result_df('Column "smoltstat" OK'))
       } else {
         return(stattab)
       }
@@ -134,20 +126,20 @@ smoltregApp <- function() {
     
     output$checkgenid <- renderTable({
       if (input$checkgenid == 0 | is_odd(input$checkgenid)) {
-        return('Click "Check genid" button')
+        return(as_result_df('Click "Check genid" button to find duplicated genid'))
       }
       dups <- duplicated(fishdata()$genid) & !is.na(fishdata()$genid)
       if (any(dups)) {
         dupstable <- fishdata[dups,]
       } else {
-        dupstable <- data.frame("No fish with duplicated genid. :-)") 
+        dupstable <- as_result_df("No fish with duplicated genid. :-)") 
       }
       return(dupstable)
     })
 
     output$checkevents <- renderTable({
       if (input$checkevents == 0 | is_odd(input$checkevents)) {
-        return('Click "Check event" button')
+        return(as_result_df('Click "Check event" button for summary of event types'))
       }
       events <- factor(fishdata()$event,
                        c(Smoltreg_event[1, ]),
@@ -158,15 +150,96 @@ smoltregApp <- function() {
     
     output$checkpittags <- renderTable({
       if (input$checkpittags == 0 | is_odd(input$checkpittags)) {
-        return('Click "Check pittags" button')
+        return(as_result_df('Click "Check pittags" button to find MARKED fish without tag'))
       }
       etab <- fishdata() %>%
-        filter(event %in% c(Smoltreg_event$MARKED, Smoltreg_event$RECAPTURED)) %>%
-        filter(is.na(pittag))
+        dplyr::filter(event %in% c(Smoltreg_event$MARKED, Smoltreg_event$RECAPTURED)) %>%
+        dplyr::filter(is.na(pittag))
       if (nrow(etab) == 0) {
         etab <- data.frame("No marked or recaptured fish without pittag. :-)")
       }
       return(etab)
+    })
+    
+    output$checkduppittag <- renderTable({
+      if (input$checkduppittag == 0 | is_odd(input$checkduppittag)) {
+        return(as_result_df('Click "Check duplicate pit" button to find duplicated pittags'))
+      }
+      marked <- fishdata() %>%
+        dplyr::filter(event == Smoltreg_event$MARKED) # all rows with marking event
+      recap <- fishdata() %>%
+        dplyr::filter(event == Smoltreg_event$RECAPTURED) # all rows with recapture event 
+      marked_dups_IDs <- marked[duplicated(marked$pittag), ]$pittag # all 
+      recap_dups_IDs <- recap[duplicated(recap$pittag), ]$pittag
+      mtab <- marked %>%
+        dplyr::filter(pittag %in% marked_dups_IDs) %>%
+        dplyr::arrange(pittag)
+      rtab <- recap %>%
+        dplyr::filter(pittag %in% recap_dups_IDs) %>%
+        dplyr::arrange(pittag)
+      res <- dplyr::bind_rows(mtab, rtab)
+      if (nrow(res) ==  0) {
+        res <- as_result_df("No duplicates found in marked fish. :-)")
+      }
+      return(res)
+    })
+    
+    output$checkrecapture <- renderTable({
+      if (input$checkrecapture == 0 | is_odd(input$checkrecapture)) {
+        return(as_result_df('Test that RECAPTUREs have an MARKED event'))
+      }
+      marked <- fishdata() %>%
+        dplyr::filter(event == Smoltreg_event$MARKED) # all rows with marking event
+      recap <- fishdata() %>%
+        dplyr::filter(event == Smoltreg_event$RECAPTURED) # all rows with recapture event 
+      r_ids <- unique(recap$pittag)
+      m_ids <- unique(marked$pittag)
+      recap_not_marked <- r_ids[!(r_ids %in% m_ids)]
+      res <- fishdata() %>% # Create table with RECAPTUREs without MARKED event
+        dplyr::filter(event == Smoltreg_event$RECAPTURED) %>%
+        dplyr::filter(pittag %in% recap_not_marked)
+      if (nrow(res) == 0) {
+        res <- as_result_df("No unmarked recaptures found. :-)")
+      }
+      return(res)
+    })
+    
+    output$checkdiffspecies <- renderTable({
+      if (input$checkdiffspecies == 0 | is_odd(input$checkdiffspecies)) {
+        return(as_result_df('Test that species is the same for MARKED and RECAPTURE'))
+      }
+      sp_err <- fishdata() %>% # If scount is > 1 we have 2 or more species on the same tag
+        dplyr::filter(!is.na(pittag)) %>%
+        dplyr::filter(!is.na(species)) %>%
+        dplyr::group_by(pittag) %>%
+        dplyr::mutate(scount = length(unique(species))) %>%
+        dplyr::filter(scount > 1)
+      sp_err_ids <- unique(sp_err$pittag)
+      res <- fishdata() %>%
+        dplyr::filter(pittag %in% sp_err_ids) %>%
+        dplyr::arrange(pittag)
+      if (nrow(res) == 0) {
+        res <- "No duplicated species errors found. :-)"
+      }
+      return(res)
+    })
+    
+    output$checkfulton <- renderTable({
+      if (input$checkfulton == 0 | is_odd(input$checkfulton)) {
+        return(as_result_df('List fish with fulton condition outside limits'))
+      }
+      min_k <- Smoltreg_limits()$min_k
+      max_k <- Smoltreg_limits()$max_k
+      res <- fishdata() %>%
+        dplyr::filter(species %in% c("Lax", "Öring")) %>%
+        dplyr::filter(!is.na(as.numeric(length)) & !is.na(as.numeric(weight))) %>%
+        dplyr::filter(length < 400) %>%
+        dplyr::mutate(k = fulton(weight, length)) %>%
+        dplyr::filter(k < min_k | k > max_k)
+      if (nrow(res) == 0) {
+        res <- as_result_df("All fish have condition factors within limits. :-)")
+      }
+      return(res)
     })
     
     output$XLSXfile <- downloadHandler(
