@@ -15,7 +15,7 @@ read_fish(
 \arguments{
 \item{xlsxfile}{Name on excel-file following the "Smoltreg"-format}
 
-\item{dummy_tags}{Vector of character with tags used as dummies that shoud be removed}
+\item{dummy_tags}{Vector of character with tags used as dummies that should be removed}
 
 \item{sheet}{Name of sheet with the fish data. Default = "Fiskdata"}
 
@@ -25,5 +25,12 @@ read_fish(
 A data frame with fishdata from the smolt trap. Basic cleanup done.
 }
 \description{
-Read sheet with fish data and do some basic cleanup.
+Read an excel-file in the \strong{Smoltreg}-format and do some basic cleanup before a data.frame
+is returned.
+If a vector of dummy_tags is given all tags matching are removed. The species name
+is standardized to capital first letter and the rest lowercase. Columns \strong{smoltstat} and
+\strong{genid} are uppercased. The column \strong{date_time} is standarised to POSIXct and
+missing values are imputed using a "last observation carried forward" algorithm.
+Missing Any NA in column \strong{event} are replaced with the UNKNOWN event code. Recaptured
+fish without species get the species set to the same as the MARKED event for that pit tag.
 }

@@ -134,9 +134,18 @@ read_meta <- function(xlsxfile) {
 
 # read_fish() ------------------------- 
 #'  Read sheet with fish data and do some basic cleanup.
+#' 
+#' Read an excel-file in the **Smoltreg**-format and do some basic cleanup before a data.frame
+#' is returned.
+#'  If a vector of dummy_tags is given all tags matching are removed. The species name
+#'  is standardized to capital first letter and the rest lowercase. Columns **smoltstat** and
+#'  **genid** are uppercased. The column **date_time** is standarised to POSIXct and
+#'  missing values are imputed using a "last observation carried forward" algorithm.
+#'  Missing Any NA in column **event** are replaced with the UNKNOWN event code. Recaptured
+#'  fish without species get the species set to the same as the MARKED event for that pit tag.
 #'
 #' @param xlsxfile Name on excel-file following the "Smoltreg"-format
-#' @param dummy_tags Vector of character with tags used as dummies that shoud be removed
+#' @param dummy_tags Vector of character with tags used as dummies that should be removed
 #' @param sheet Name of sheet with the fish data. Default = "Fiskdata"
 #' @param date_formats Character vector with DateTime formats that should be tried when reading dates
 #'
