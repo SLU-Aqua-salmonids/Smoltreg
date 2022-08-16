@@ -1,5 +1,5 @@
 Package: Smoltreg
-Title: Check data quality of data files delivered from smolt traps.
+Title: Check data quality of data files delivered from smolt traps
 Version: 0.0.0.9000
 Authors@R: 
     person("Anders", "Kagervall", , "anders.kagervall", role = c("aut", "cre"),
@@ -8,13 +8,17 @@ Maintainer: Anders Kagervall <anders.kagervall@slu.se>
 Description: What the package does (one paragraph).
 Imports: 
     magrittr,
+    shiny,
+    dplyr,
     readxl,
-    settings
+    writexl,
+    settings,
+    grDevices
 Suggests: imputeTS
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Depends: 
     R (>= 2.10)
 LazyData: true
