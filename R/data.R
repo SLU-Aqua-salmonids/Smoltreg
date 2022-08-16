@@ -1,8 +1,8 @@
-#' Smoltreg_events
+#' events
 #' 
 #' Constants for all allowed numbers in column "HÄNDELSE" in the Smoltreg format
 #' 
-#' @format Smoltreg_events data.frame
+#' @format Smoltreg::events data.frame
 #' \describe{
 #'   \item{UNKNOWN}{0, unknown event type}
 #'   \item{CAUGHT}{1, the fish was caught but not released to be part of recapture experiment}
@@ -11,10 +11,10 @@
 #'   \item{REMOVED}{4, the fish was removed, i.e. dead in trap, taken as sample...}
 #' }
 #'
-"Smoltreg_event"
+"event"
 
 #' allowed_species
 #' 
-#' A vector of caharcter containing all species namnes that are allowed in Sötebasen.
+#' A vector of character containing all species names that are allowed in Sötebasen.
 #' 
 "allowed_species"

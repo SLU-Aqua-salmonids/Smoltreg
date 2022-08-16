@@ -125,9 +125,10 @@ strip_time <- function(t) {
 #' @param x 
 #'
 #' @return
+#' mean with outliers removed
 #'
 mean_nooutliers <-  function(x) {
-  return(mean(boxplot.stats(x)$stats))
+  return(mean(grDevices::boxplot.stats(x)$stats))
 }
 
 # HOBO related functions ----

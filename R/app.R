@@ -1,44 +1,61 @@
+
+library(shiny)
+
+
+#' smoltregApp
+#' 
+#' Start the Smoltreg shiny app.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' library(Smoltreg)
+#' smoltregApp()
+#' }
 smoltregApp <- function() {
-  library(shiny)
   # GUI ---------------------------------------------------------------------
-  ui <- fluidPage(title ="Smoltreg data checker and converter.",
-    fluidRow(
-      column(width = 12,
-             h1("Smoltreg data checker and converter."),
-             p("Check your Smoltreg file by running each of the tests below.
+  ui <- shiny::fluidPage(
+    title ="Smoltreg data checker and converter.",
+    shiny::fluidRow(
+      shiny::column(
+        width = 12,
+                    shiny::h1("Smoltreg data checker and converter."),
+                    shiny::p("Check your Smoltreg file by running each of the tests below.
                When all test pass use the last button to generate a file suitable
                for upload to Sötebasen."))
     ),
-    fluidRow(
-      column(width = 4,
-             fileInput("file1", "Upload Smoltreg file",
+    shiny::fluidRow(
+      shiny::column(
+        width = 4,
+        shiny::fileInput("file1", "Upload Smoltreg file",
                        accept = c("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                                   "application/vnd.ms-excel"))),
-      column(width = 8, tableOutput("file1"))),
-    fluidRow(column(width = 4, actionButton("listspecies", "List species")),
-             column(width = 8, tableOutput("listspecies"))),
-    fluidRow(column(width = 4, actionButton("unknownspecies", "Unknown species")),
-             column(width = 8, tableOutput("unknownspecies"))),
-    fluidRow(column(width = 4, actionButton("checkdates", "Check dates")),
-             column(width = 8, tableOutput("checkdates"))),
-    fluidRow(column(width = 4, actionButton("checknumeric", "Check numeric")),
-             column(width = 8, tableOutput("checknumeric"))),
-    fluidRow(column(width = 4, actionButton("checksmoltstat", "Check smoltstat")),
-             column(width = 8, tableOutput("checksmoltstat"))),
-    fluidRow(column(width = 4, actionButton("checkgenid", "Check genid")),
-             column(width = 8, tableOutput("checkgenid"))),
-    fluidRow(column(width = 4, actionButton("checkevents", "Check events")),
-             column(width = 8, tableOutput("checkevents"))),
-    fluidRow(column(width = 4, actionButton("checkpittags", "Check PIT tags")),
-             column(width = 8, tableOutput("checkpittags"))),
-    fluidRow(column(width = 4, actionButton("checkduppittag", "Check duplicated PIT")),
-             column(width = 8, tableOutput("checkduppittag"))),
-    fluidRow(column(width = 4, actionButton("checkrecapture", "Check unMARKED RECAPTURE events")),
-             column(width = 8, tableOutput("checkrecapture"))),
-    fluidRow(column(width = 4, actionButton("checkdiffspecies", "Check same species")),
-             column(width = 8, tableOutput("checkdiffspecies"))),
-    fluidRow(column(width = 4, actionButton("checkfulton", "List fulton outliers")),
-             column(width = 8, tableOutput("checkfulton")))
+      shiny::column(width = 8, shiny::tableOutput("file1"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("listspecies", "List species")),
+                    shiny::column(width = 8, shiny::tableOutput("listspecies"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("unknownspecies", "Unknown species")),
+                    shiny::column(width = 8, shiny::tableOutput("unknownspecies"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checkdates", "Check dates")),
+                    shiny::column(width = 8, shiny::tableOutput("checkdates"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checknumeric", "Check numeric")),
+                    shiny::column(width = 8, shiny::tableOutput("checknumeric"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checksmoltstat", "Check smoltstat")),
+                    shiny::column(width = 8, shiny::tableOutput("checksmoltstat"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checkgenid", "Check genid")),
+                    shiny::column(width = 8, shiny::tableOutput("checkgenid"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checkevents", "Check events")),
+                    shiny::column(width = 8, shiny::tableOutput("checkevents"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checkpittags", "Check PIT tags")),
+                    shiny::column(width = 8, shiny::tableOutput("checkpittags"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checkduppittag", "Check duplicated PIT")),
+                    shiny::column(width = 8, shiny::tableOutput("checkduppittag"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checkrecapture", "Check unMARKED RECAPTURE events")),
+                    shiny::column(width = 8, shiny::tableOutput("checkrecapture"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checkdiffspecies", "Check same species")),
+                    shiny::column(width = 8, shiny::tableOutput("checkdiffspecies"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checkfulton", "List fulton outliers")),
+                    shiny::column(width = 8, shiny::tableOutput("checkfulton")))
     
   )
 
@@ -46,15 +63,14 @@ smoltregApp <- function() {
     server <- function(input, output) {
     ##    source("config.R", encoding = "UTF-8")
     ##    source("functions.R", encoding = "UTF-8")
-    require(Smoltreg)
+    #require(Smoltreg)
     as_result_df <- function(x) {
       return(data.frame(Result = x))
     }
-    metadata <- reactive(read_meta(input$file1$datapath))
-    fishdata <- reactive(read_fish(input$file1$datapath,
-                                   dummy_tags = metadata()$dummy_tags))
+    metadata <- shiny::reactive(read_meta(input$file1$datapath))
+    fishdata <- shiny::reactive(read_fish(input$file1$datapath, dummy_tags = metadata()$dummy_tags))
     
-    output$file1 <- renderTable({
+    output$file1 <- shiny::renderTable({
       if (is.null(input$file1)) {
         return(data.frame(River = NA, Start = NA, End =  NA, N_fish = NA))
       }
@@ -68,7 +84,7 @@ smoltregApp <- function() {
       return(infotab)}
     )
     
-    output$listspecies <- renderTable({
+    output$listspecies <- shiny::renderTable({
       if (input$listspecies == 0 | is_odd(input$listspecies)) {
         return(as_result_df('Click "List species" button'))
       }
@@ -76,7 +92,7 @@ smoltregApp <- function() {
         return(res)
     })
     
-    output$unknownspecies <- renderTable({
+    output$unknownspecies <- shiny::renderTable({
       if (input$unknownspecies == 0 | is_odd(input$unknownspecies)) {
         return(as_result_df('Click "Unknown species" button'))
       }
@@ -84,7 +100,7 @@ smoltregApp <- function() {
       return(res)
     })
     
-    output$checkdates <- renderTable({
+    output$checkdates <- shiny::renderTable({
       if (input$checkdates == 0 | is_odd(input$checkdates)) {
         return(as_result_df('Click "Check dates" button to test date_time column format'))
       }
@@ -96,7 +112,7 @@ smoltregApp <- function() {
       return(res)
     })
  
-    output$checknumeric <- renderTable({
+    output$checknumeric <- shiny::renderTable({
       if (input$checknumeric == 0 | is_odd(input$checknumeric)) {
         return(as_result_df('Click "Check numeric" button'))
       } else {
@@ -110,7 +126,7 @@ smoltregApp <- function() {
       return(res)
     })
     
-    output$checksmoltstat <- renderTable({
+    output$checksmoltstat <- shiny::renderTable({
       if (input$checksmoltstat == 0 | is_odd(input$checksmoltstat)) {
         return(as_result_df('Click "Check smoltstat" button'))
       }
@@ -124,7 +140,7 @@ smoltregApp <- function() {
       }
     })
     
-    output$checkgenid <- renderTable({
+    output$checkgenid <- shiny::renderTable({
       if (input$checkgenid == 0 | is_odd(input$checkgenid)) {
         return(as_result_df('Click "Check genid" button to find duplicated genid'))
       }
@@ -137,23 +153,23 @@ smoltregApp <- function() {
       return(dupstable)
     })
 
-    output$checkevents <- renderTable({
+    output$checkevents <- shiny::renderTable({
       if (input$checkevents == 0 | is_odd(input$checkevents)) {
         return(as_result_df('Click "Check event" button for summary of event types'))
       }
       events <- factor(fishdata()$event,
-                       c(Smoltreg_event[1, ]),
-                       labels = c(names(Smoltreg_event)))
+                       c(Smoltreg::event[1, ]),
+                       labels = c(names(Smoltreg::event)))
       eventtable <- as.data.frame(table(events))
       return(eventtable)
     })
     
-    output$checkpittags <- renderTable({
+    output$checkpittags <- shiny::renderTable({
       if (input$checkpittags == 0 | is_odd(input$checkpittags)) {
         return(as_result_df('Click "Check pittags" button to find MARKED fish without tag'))
       }
       etab <- fishdata() %>%
-        dplyr::filter(event %in% c(Smoltreg_event$MARKED, Smoltreg_event$RECAPTURED)) %>%
+        dplyr::filter(event %in% c(Smoltreg::event$MARKED, Smoltreg::event$RECAPTURED)) %>%
         dplyr::filter(is.na(pittag))
       if (nrow(etab) == 0) {
         etab <- data.frame("No marked or recaptured fish without pittag. :-)")
@@ -161,14 +177,14 @@ smoltregApp <- function() {
       return(etab)
     })
     
-    output$checkduppittag <- renderTable({
+    output$checkduppittag <- shiny::renderTable({
       if (input$checkduppittag == 0 | is_odd(input$checkduppittag)) {
         return(as_result_df('Click "Check duplicate pit" button to find duplicated pittags'))
       }
       marked <- fishdata() %>%
-        dplyr::filter(event == Smoltreg_event$MARKED) # all rows with marking event
+        dplyr::filter(event == Smoltreg::event$MARKED) # all rows with marking event
       recap <- fishdata() %>%
-        dplyr::filter(event == Smoltreg_event$RECAPTURED) # all rows with recapture event 
+        dplyr::filter(event == Smoltreg::event$RECAPTURED) # all rows with recapture event 
       marked_dups_IDs <- marked[duplicated(marked$pittag), ]$pittag # all 
       recap_dups_IDs <- recap[duplicated(recap$pittag), ]$pittag
       mtab <- marked %>%
@@ -184,19 +200,19 @@ smoltregApp <- function() {
       return(res)
     })
     
-    output$checkrecapture <- renderTable({
+    output$checkrecapture <- shiny::renderTable({
       if (input$checkrecapture == 0 | is_odd(input$checkrecapture)) {
         return(as_result_df('Test that RECAPTUREs have an MARKED event'))
       }
       marked <- fishdata() %>%
-        dplyr::filter(event == Smoltreg_event$MARKED) # all rows with marking event
+        dplyr::filter(event == Smoltreg::event$MARKED) # all rows with marking event
       recap <- fishdata() %>%
-        dplyr::filter(event == Smoltreg_event$RECAPTURED) # all rows with recapture event 
+        dplyr::filter(event == Smoltreg::event$RECAPTURED) # all rows with recapture event 
       r_ids <- unique(recap$pittag)
       m_ids <- unique(marked$pittag)
       recap_not_marked <- r_ids[!(r_ids %in% m_ids)]
       res <- fishdata() %>% # Create table with RECAPTUREs without MARKED event
-        dplyr::filter(event == Smoltreg_event$RECAPTURED) %>%
+        dplyr::filter(event == Smoltreg::event$RECAPTURED) %>%
         dplyr::filter(pittag %in% recap_not_marked)
       if (nrow(res) == 0) {
         res <- as_result_df("No unmarked recaptures found. :-)")
@@ -204,7 +220,7 @@ smoltregApp <- function() {
       return(res)
     })
     
-    output$checkdiffspecies <- renderTable({
+    output$checkdiffspecies <- shiny::renderTable({
       if (input$checkdiffspecies == 0 | is_odd(input$checkdiffspecies)) {
         return(as_result_df('Test that species is the same for MARKED and RECAPTURE'))
       }
@@ -224,7 +240,7 @@ smoltregApp <- function() {
       return(res)
     })
     
-    output$checkfulton <- renderTable({
+    output$checkfulton <- shiny::renderTable({
       if (input$checkfulton == 0 | is_odd(input$checkfulton)) {
         return(as_result_df('List fish with fulton condition outside limits'))
       }
@@ -242,7 +258,7 @@ smoltregApp <- function() {
       return(res)
     })
     
-    output$XLSXfile <- downloadHandler(
+    output$XLSXfile <- shiny::downloadHandler(
       filename = function() {paste0(tools::file_path_sans_ext(input$file1$name),
                                     "_sötebasen.xlsx")},
       content = function(file) {
@@ -322,6 +338,6 @@ smoltregApp <- function() {
     ) # End output$XLSXfile
 
     }
-    shinyApp(ui, server)
+    shiny::shinyApp(ui, server)
 }
 

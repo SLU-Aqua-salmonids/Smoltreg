@@ -38,7 +38,7 @@ can_coerce_numeric <- function(x) {
 #' @export
 #'
 impute_date_time <- function(x) {
-  if (!require(imputeTS)) {
+  if (!requireNamespace("imputeTS")) {
     warning("Library imputeTS missing. Can not impute date.")
     return(x)
   }
@@ -173,7 +173,7 @@ read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
 
   if (any(is.na(d$event))) {
     # If event is NA set it to UNKNOWN
-    d[which(is.na(d$event)),]$event <- Smoltreg_event$UNKNOWN
+    d[which(is.na(d$event)),]$event <- Smoltreg::event$UNKNOWN
   }
   if (any(d$pittag %in% dummy_tags)) {
     # Unmarked fish should not have a pittag, remove them (they are scanned dummytags)
@@ -190,10 +190,10 @@ read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
     d$date_time <- impute_date_time(d$date_time)
   }
   d$date_time <- as.POSIXct(d$date_time)
-  recaptues_id <- d[d$event == Smoltreg_event$RECAPTURED & is.na(d$species), ]$pittag
+  recaptues_id <- d[d$event == Smoltreg::event$RECAPTURED & is.na(d$species), ]$pittag
   recaptues_id <- unique(recaptues_id) # Filter duplicates (maybe not the right thing to do)
   if (length(recaptues_id > 0)) { # Create a table with the data recorded for pittag at marking
-    sp.df <- d[d$event == Smoltreg_event$MARKED & d$pittag %in% recaptues_id,
+    sp.df <- d[d$event == Smoltreg::event$MARKED & d$pittag %in% recaptues_id,
                c("pittag", "species", "length", "weight", "smoltstat")] # Columns to extract
     for (i in seq_along(recaptues_id)){ # Set missing species to species from MARK event 
       d[!is.na(d$pittag) & d$pittag == recaptues_id[i] & is.na(d$species), ] %<>% # Assignment pipe, see magrittr
@@ -231,6 +231,7 @@ read_hobo <- function(f, sheet, tz="CET") {
 #' @param sheet2  Name of sheet with data from logger in air
 #'
 #' @return
+#' return formated water temperature and depth
 #' @export
 #'
 read_envdata <- function(xlsxfile, firstdate, lastdate,

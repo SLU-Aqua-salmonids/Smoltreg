@@ -12,11 +12,11 @@ river <- metadata$river
 year <- format(metadata$startdate, "%Y")
 
 #The number of fish per species:
-sort(table(fishdata[fishdata$event != Smoltreg_event$RECAPTURED,]$species), decreasing =  TRUE)
+sort(table(fishdata[fishdata$event != Smoltreg::event$RECAPTURED,]$species), decreasing =  TRUE)
 
 #Check for unknown species in input.
 as.data.frame(fishdata[!fishdata$species %in% allowed_species &
-                         fishdata$event != Smoltreg_event$RECAPTURED,])
+                         fishdata$event != Smoltreg::event$RECAPTURED,])
 
 ##
 #cat(paste0("**Checking fish data format in selected columns read from *", params$origName, "*.**\n\n"))
