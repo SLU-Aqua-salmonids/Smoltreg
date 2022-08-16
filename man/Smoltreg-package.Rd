@@ -4,7 +4,7 @@
 \name{Smoltreg-package}
 \alias{Smoltreg}
 \alias{Smoltreg-package}
-\title{Smoltreg: Check data quality of data files delivered from smolt traps.}
+\title{Smoltreg: Check data quality of data files delivered from smolt traps}
 \description{
 What the package does (one paragraph).
 }

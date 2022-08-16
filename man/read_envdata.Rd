@@ -24,7 +24,7 @@ read_envdata(
 \item{sheet2}{Name of sheet with data from logger in air}
 }
 \value{
-
+return formated water temperature and depth
 }
 \description{
 Read data with water temperature and pressure + reference pressure in air.

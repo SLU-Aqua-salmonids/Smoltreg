@@ -11,6 +11,6 @@ An object of class \code{character} of length 77.
 allowed_species
 }
 \description{
-A vector of caharcter containing all species namnes that are allowed in Sötebasen.
+A vector of character containing all species names that are allowed in Sötebasen.
 }
 \keyword{datasets}

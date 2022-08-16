@@ -10,7 +10,7 @@ mean_nooutliers(x)
 \item{x}{}
 }
 \value{
-
+mean with outliers removed
 }
 \description{
 Remove outliers from x using boxplot.stats and return the mean of remaining data
