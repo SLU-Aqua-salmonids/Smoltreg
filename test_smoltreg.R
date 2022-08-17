@@ -6,8 +6,8 @@ smoltreg_file <- file.choose()
 
 metadata <- read_meta(smoltreg_file)
 fishdata <- read_fish(smoltreg_file, dummy_tags = metadata$dummy_tags)
-allowed_species <- read.table(system.file("extdata", "allowed_species.txt", package = "Smoltreg"),
-                              sep="\t", encoding="UTF-8")[,1]
+#allowed_species <- read.table(system.file("extdata", "allowed_species.txt", package = "Smoltreg"),
+#                              sep="\t", encoding="UTF-8")[,1]
 river <- metadata$river
 year <- format(metadata$startdate, "%Y")
 
