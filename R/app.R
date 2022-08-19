@@ -55,8 +55,9 @@ smoltregApp <- function() {
     shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checkdiffspecies", "Check same species")),
                     shiny::column(width = 8, shiny::tableOutput("checkdiffspecies"))),
     shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checkfulton", "List fulton outliers")),
-                    shiny::column(width = 8, shiny::tableOutput("checkfulton")))
-    
+                    shiny::column(width = 8, shiny::tableOutput("checkfulton"))),
+    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("XLSXfile", "Save Sötebasen-file")),
+                    shiny::column(width = 8, shiny::p("FOO")))
   )
 
   # Server ------------------------------------------------------------------------
@@ -265,67 +266,67 @@ smoltregApp <- function() {
         # Generate Excel in 'file' here.
         tmpDir <- tempdir()
         odir <- setwd(tmpDir)
-        metadata <- read_meta(input$file1$datapath)
-        fishdata <- read_fish(input$file1$datapath,
-                              dummy_tags = metadata$dummy_tags)
-        start_year <- as.numeric(format(metadata$startdate, "%Y"))
-        end_year <- as.numeric(format(metadata$enddate, "%Y"))
+        # metadata <- read_meta(input$file1$datapath)
+        # fishdata <- read_fish(input$file1$datapath,
+        #                       dummy_tags = metadata$dummy_tags)
+        start_year <- as.numeric(format(metadata()$startdate, "%Y"))
+        end_year <- as.numeric(format(metadata()$enddate, "%Y"))
         
         # We define "Insamling" as one season for one trap.
         # Start and stop year (Årtal och Årtal2) are set to the same year.
         Insamling <- data.frame(InsamlingID = 1,
-                                Vatten = metadata$river,
+                                Vatten = metadata()$river,
                                 Årtal = start_year,
                                 Årtal2 = start_year,
-                                Metod = metadata$Metod,
-                                Ansvarig = metadata$Ansvarig,
-                                Syfte = metadata$Syfte,
+                                Metod = metadata()$Metod,
+                                Ansvarig = metadata()$Ansvarig,
+                                Syfte = metadata()$Syfte,
                                 Sekretess = "Nej",
-                                Signatur = metadata$Signatur
+                                Signatur = metadata()$Signatur
         )
         # Also "Ansträngning" is one season for one trap..
         Ansträngning <- data.frame(AnsträngningID = 1,
                                    InsamlingID = 1,
-                                   AnstrTyp = metadata$Metod,
-                                   AnstrPlats = metadata$loc_name,
-                                   AnstrDatumStart = metadata$startdate,
-                                   AnstrDatumSlut = metadata$enddate,
-                                   AnstrS99TM_N_1 = metadata$N_coord,
-                                   AnstrS99TM_E_1 = metadata$E_coord,
-                                   Märkning = metadata$Märkning,
-                                   SignAnstr = metadata$Signatur
+                                   AnstrTyp = metadata()$Metod,
+                                   AnstrPlats = metadata()$loc_name,
+                                   AnstrDatumStart = metadata()$startdate,
+                                   AnstrDatumSlut = metadata()$enddate,
+                                   AnstrS99TM_N_1 = metadata()$N_coord,
+                                   AnstrS99TM_E_1 = metadata()$E_coord,
+                                   Märkning = metadata()$Märkning,
+                                   SignAnstr = metadata()$Signatur
         )
         ###
         ## Assume that catch_time == "00:00" equals missing time and set time to NA.
-        catch_time <- format(fishdata$date_time, "%H:%M")
+        catch_time <- format(fishdata()$date_time, "%H:%M")
         catch_time <- ifelse(catch_time == "00:00", NA, catch_time)
-        Individ <- data.frame(#IndividID = 1:nrow(fishdata),
+        Individ <- data.frame(#IndividID = 1:nrow(fishdata()),
           InsamlingId = 1,
           AnsträngningID = 1,
-          FångstDatum = format(fishdata$date_time, "%Y-%m-%d"),
+          FångstDatum = format(fishdata()$date_time, "%Y-%m-%d"),
           FångstTid = catch_time,
-          Art = fishdata$species,
-          Åldersprov = ifelse(is.na(fishdata$genid), 'Nej', 'Ja'),
-          Provkod = fishdata$genid,
-          Längd1 = fishdata$length,
-          Vikt1 = fishdata$weight,
-          Behandling = event2Behandling(fishdata$event),
-          Stadium = fishdata$smoltstat,
-          MärkeNr = as.character(fishdata$pittag),
-          Märkning = ifelse(is.na(fishdata$pittag),NA, metadata$Märkning),
-          SignIndivid = metadata$Signatur,
-          AnmIndivid = fishdata$comment
+          Art = fishdata()$species,
+          Åldersprov = ifelse(is.na(fishdata()$genid), 'Nej', 'Ja'),
+          Provkod = fishdata()$genid,
+          Längd1 = fishdata()$length,
+          Vikt1 = fishdata()$weight,
+          Behandling = event2Behandling(fishdata()$event),
+          Stadium = fishdata()$smoltstat,
+          MärkeNr = as.character(fishdata()$pittag),
+          Märkning = ifelse(is.na(fishdata()$pittag),NA, metadata()$Märkning),
+          SignIndivid = metadata()$Signatur,
+          AnmIndivid = fishdata()$comment
         )
         
         sheetnames <- c('Insamling', enc2utf8('Ansträngning'), 'Individ')
         l <- list(Insamling, Ansträngning, Individ)
         if (input$do_envdata) {
-          envdata <- read_envdata(input$file1$datapath, metadata$startdate, metadata$enddate)
+          envdata <- read_envdata(input$file1$datapath, metadata()$startdate, metadata()$enddate)
           Temperatur <- data.frame(InsamlingID = 1,
                                    MätDatum = envdata$date,
                                    Tempbotten = envdata$w_temp,
                                    Vattennivå = envdata$w_level,
-                                   SignTemp = metadata$Signatur
+                                   SignTemp = metadata()$Signatur
           )
           sheetnames <- c(sheetnames, 'Temperatur')
           l <- c(l , list(Temperatur))
