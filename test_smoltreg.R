@@ -2,6 +2,7 @@ library(Smoltreg)
 library(dplyr)
 library(readxl)
 
+
 smoltreg_file <- file.choose()
 
 metadata <- read_meta(smoltreg_file)
