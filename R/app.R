@@ -146,7 +146,7 @@ smoltregApp <- function() {
       }
       dups <- duplicated(fishdata()$genid) & !is.na(fishdata()$genid)
       if (any(dups)) {
-        dupstable <- fishdata[dups,]
+        dupstable <- fishdata()[dups,]
       } else {
         dupstable <- as_result_df("No fish with duplicated genid. :-)") 
       }
@@ -172,7 +172,7 @@ smoltregApp <- function() {
         dplyr::filter(event %in% c(Smoltreg::event$MARKED, Smoltreg::event$RECAPTURED)) %>%
         dplyr::filter(is.na(pittag))
       if (nrow(etab) == 0) {
-        etab <- data.frame("No marked or recaptured fish without pittag. :-)")
+        etab <- as_result_df("No marked or recaptured fish without pittag. :-)")
       }
       return(etab)
     })
