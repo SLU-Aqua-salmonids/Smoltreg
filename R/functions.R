@@ -190,17 +190,17 @@ read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
     d$date_time <- impute_date_time(d$date_time)
   }
   d$date_time <- as.POSIXct(d$date_time)
-  recaptues_id <- d[d$event == Smoltreg::event$RECAPTURED & is.na(d$species), ]$pittag
-  recaptues_id <- unique(recaptues_id) # Filter duplicates (maybe not the right thing to do)
-  if (length(recaptues_id > 0)) { # Create a table with the data recorded for pittag at marking
-    sp.df <- d[d$event == Smoltreg::event$MARKED & d$pittag %in% recaptues_id,
+  recaptures_id <- d[d$event == Smoltreg::event$RECAPTURED & is.na(d$species), ]$pittag
+  recaptures_id <- unique(recaptures_id) # Filter duplicates (maybe not the right thing to do)
+  if (length(recaptures_id > 0)) { # Create a table with the data recorded for pittag at marking
+    sp.df <- d[d$event == Smoltreg::event$MARKED & d$pittag %in% recaptures_id,
                c("pittag", "species", "length", "weight", "smoltstat")] # Columns to extract
-    for (i in seq_along(recaptues_id)){ # Set missing species to species from MARK event 
-      d[!is.na(d$pittag) & d$pittag == recaptues_id[i] & is.na(d$species), ] %<>% # Assignment pipe, see magrittr
-        dplyr::mutate(species = sp.df[sp.df$pittag == recaptues_id[i],]$species,
-               smoltstat = sp.df[sp.df$pittag == recaptues_id[i],]$smoltstat,
-               length = sp.df[sp.df$pittag == recaptues_id[i],]$length,
-               weight = sp.df[sp.df$pittag == recaptues_id[i],]$weight)
+    for (i in seq_along(recaptures_id)){ # Set missing species to species from MARK event 
+      d[!is.na(d$pittag) & d$pittag == recaptures_id[i] & is.na(d$species), ] %<>% # Assignment pipe, see magrittr
+        dplyr::mutate(species = sp.df[sp.df$pittag == recaptures_id[i],]$species,
+               smoltstat = sp.df[sp.df$pittag == recaptures_id[i],]$smoltstat,
+               length = sp.df[sp.df$pittag == recaptures_id[i],]$length,
+               weight = sp.df[sp.df$pittag == recaptures_id[i],]$weight)
     }
   }
   return(d)
