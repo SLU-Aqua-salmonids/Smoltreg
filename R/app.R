@@ -334,7 +334,7 @@ smoltregApp <- function() {
         names(l) <- sheetnames
         writexl::write_xlsx(l, path = file)
         setwd(odir)
-      },
+      }, # End function(file)
       contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     ) # End output$XLSXfile
 
