@@ -237,7 +237,7 @@ read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
 read_hobo <- function(f, sheet, tz="CET") {
   new_names <-  c('date_time', 'pressure', 'temp') #, 'couplerDet',
 #                  'couplerAtt', 'hostConn', 'stopped', 'EOF')
-  d <- readxl::read_excel(f, sheet = sheet)
+  d <- readxl::read_excel(f, sheet = sheet)[ , c(1:3)]
   names(d) <- new_names
   d$date_time <- as.POSIXct(as.character(d$date_time), tz="CET")
   return(d)
