@@ -25,6 +25,32 @@ can_coerce_numeric <- function(x) {
   }
 }
 
+#' Translate event codes to Sötebasens strings for Behandling
+#'
+#' @param x numeric 
+#'
+#' @return
+#' Text representation of event codes defined for Smoltreg
+#' @export
+#'
+#' @examples
+#' ev <- c(min(Smoltreg::event):max(Smoltreg::event))
+#' sb_ev <- event2Behandling(ev)
+#' sb_ev
+event2Behandling <- function(x) {
+  # 
+  return(as.character(
+    factor(x,
+           levels = c(Smoltreg::event$UNKNOWN, Smoltreg::event$CAUGHT,
+                      Smoltreg::event$MARKED, Smoltreg::event$RECAPTURED,
+                      Smoltreg::event$REMOVED),
+           labels = c('', 'Utsatt', 'Märkt&utsatt',
+                      'Återfångad&utsatt', 'Landad/avlivad/död')
+    )
+  )
+  )
+}
+
 
 ##
 #' impute_date_time

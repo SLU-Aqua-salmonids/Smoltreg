@@ -2,6 +2,7 @@
 
 export(Smoltreg_limits)
 export(can_coerce_numeric)
+export(event2Behandling)
 export(impute_date_time)
 export(read_envdata)
 export(read_fish)
