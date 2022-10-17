@@ -1,3 +1,7 @@
+is_odd <- function(x) {
+  return(x %% 2 == 0)        # Create even/odd logical
+}
+
 # Misc functions ----------------------------------------------------------------
 #' Fulton condition factor
 #'
