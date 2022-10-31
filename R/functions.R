@@ -213,6 +213,7 @@ read_hobo <- function(f, sheet, tz="CET") {
 #                  'couplerAtt', 'hostConn', 'stopped', 'EOF')
   d <- readxl::read_excel(f, sheet = sheet)
   names(d) <- new_names
+  d <- d[, 1:3]
   d$date_time <- as.POSIXct(as.character(d$date_time), tz="CET")
   return(d)
 }
