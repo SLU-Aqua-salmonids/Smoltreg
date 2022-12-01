@@ -9,8 +9,8 @@
 #' A numeric
 #'
 fulton <- function(w, l){
-  l <- l / 10 # Convert length to cm
-  k <- 100 * (w / l^3)
+  l <- as.numeric(l) / 10 # Convert length to cm
+  k <- 100 * (as.numeric(w) / l^3)
   return(k)
 }
 
