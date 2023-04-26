@@ -118,45 +118,6 @@ read_meta <- function(xlsxfile) {
   return(c(l1, l2))
 }
 
-# read_meta_V1 <- function(xlsxfile, sheet = "Metadata" ) {
-#   sheets <- excel_sheets(xlsxfile)
-#   d <- read_excel(xlsxfile, sheet = sheet, col_names = FALSE)
-#   d <- as.data.frame(d)
-#   d <- remove_empty_rows(d)
-#   d[,1] <- tolower(d[,1])
-#   d[,1] <- gsub(":", "", d[,1])
-#   d[,1] <- gsub("älv", "river", d[,1])
-#   d[,1] <- gsub("fällplats", "loc_name", d[,1])
-#   d[,1] <- gsub("startdatum", "startdate", d[,1])
-#   d[,1] <- gsub("stoppdatum", "enddate", d[,1])
-#   d[,1] <- gsub("nord", "N_coord", d[,1])
-#   d[,1] <- gsub("öst", "E_coord", d[,1])
-#   d[,1] <- gsub("driftansvarig", "contact", d[,1])
-#   d[,1] <- gsub("e-post", "email", d[,1])
-#   d[,1] <- gsub("dummy tag", "dummy_tags", d[,1])
-#   
-#   l1 <- list(river = d[d[,1]=="river",2],
-#              loc_name = d[d[,1]=="loc_name",2],
-#              startdate = as.Date(d[d[,1]=="startdate",2]),
-#              enddate = as.Date(d[d[,1]=="enddate",2]),
-#              N_coord = as.numeric(d[d[,1]=="N_coord",2]),
-#              E_coord = as.numeric(d[d[,1]=="E_coord",2]),
-#              contact = d[d[,1]=="contact",2],
-#              email   = d[d[,1]=="email",2],
-#              dummy_tags = d[d[,1]=="dummy_tags",2]
-#   )
-#   if ("Metadata2" %in% sheets) {
-#     d2 <- read_excel(xlsxfile, sheet = "Metadata2", col_names = FALSE)
-#     d2 <- as.data.frame(d2)
-#     d2 <- remove_empty_rows(d2)
-#     d2[,1] <- gsub(":", "", d2[,1])
-#     
-#     l2 <- setNames(as.list(d2[,2]), d2[,1])
-#   } else {
-#     l2 <- NULL
-#   }
-#   return(c(l1, l2))
-# }
 
 # read_fish() ------------------------- 
 #'  Read sheet with fish data and do some basic cleanup.
