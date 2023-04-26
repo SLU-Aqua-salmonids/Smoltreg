@@ -180,8 +180,9 @@ read_meta <- function(xlsxfile) {
 #' @export
 #'
 read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
-                      date_formats = c('%m-%d-%Y %H:%M:%S',
-                                       '%Y-%m-%d %H:%M:%S',
+                      date_formats = c('%Y-%m-%d %H:%M:%S',
+                                       '%Y-%m-%d',
+                                       '%m-%d-%Y %H:%M:%S',
                                        '%m/%d/%y.%H:%M:%S')) {
   d <- readxl::read_excel(xlsxfile, sheet = sheet)
   d <- d[, 1:9] # Columns needed for database MUST be  columns 1:9
