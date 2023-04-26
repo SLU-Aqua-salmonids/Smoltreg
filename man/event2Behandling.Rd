@@ -2,11 +2,16 @@
 % Please edit documentation in R/functions.R
 \name{event2Behandling}
 \alias{event2Behandling}
+<<<<<<< HEAD
 \title{Translate event codes to Sötebasens strings for Behandling}
+=======
+\title{Convert event code to Sötebasen string}
+>>>>>>> 1b2623a8fc28ec2250b7f36945e8156fa2501905
 \usage{
 event2Behandling(x)
 }
 \arguments{
+<<<<<<< HEAD
 \item{x}{numeric}
 }
 \value{
@@ -19,4 +24,16 @@ Translate event codes to Sötebasens strings for Behandling
 ev <- c(min(Smoltreg::event):max(Smoltreg::event))
 sb_ev <- event2Behandling(ev)
 sb_ev
+=======
+\item{x}{event codes}
+}
+\value{
+character strings
+}
+\description{
+Convert event code to Sötebasen string
+}
+\examples{
+event2Behandling(c(0,1,2,3,4))
+>>>>>>> 1b2623a8fc28ec2250b7f36945e8156fa2501905
 }

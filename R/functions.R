@@ -239,6 +239,7 @@ read_hobo <- function(f, sheet, tz="CET") {
 #                  'couplerAtt', 'hostConn', 'stopped', 'EOF')
   d <- readxl::read_excel(f, sheet = sheet)[ , c(1:3)]
   names(d) <- new_names
+  d <- d[, 1:3]
   d$date_time <- as.POSIXct(as.character(d$date_time), tz="CET")
   return(d)
 }
@@ -290,6 +291,30 @@ read_envdata <- function(xlsxfile, firstdate, lastdate,
   return(per_day)
 }
 
+
+#' Convert event code to Sötebasen string
+#'
+#' @param x event codes
+#'
+#' @return
+#' character strings 
+#' @export
+#'
+#' @examples
+#' event2Behandling(c(0,1,2,3,4))
+event2Behandling <- function(x) {
+  # Translate event codes to Sötebasens strings for Behandling
+  return(as.character(
+    factor(x,
+           levels = c(Smoltreg::event$UNKNOWN, Smoltreg::event$CAUGHT,
+                      Smoltreg::event$MARKED, Smoltreg::event$RECAPTURED,
+                      Smoltreg::event$REMOVED),
+           labels = c('', 'Utsatt', 'Märkt&utsatt',
+                      'Återfångad&utsatt', 'Landad/avlivad/död')
+    )
+  )
+  )
+}
 
 # Save data to SQLite ----------------------------------------------------------------
   # save_to_sqlite <- function(dbname, table, x, overwrite = TRUE) {

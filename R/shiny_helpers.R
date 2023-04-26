@@ -1,11 +1,10 @@
-is_odd <- function(x) {
-  return(x %% 2 == 0)        # Create even/odd logical
-}
+
 
 mk_species_table <- function(fish) {
-  res <- as.data.frame(sort(
-    table(fish[fish$event != Smoltreg::event$RECAPTURED,]$species), decreasing =  TRUE))
+  res <- as.data.frame(
+    table(fish[fish$event != Smoltreg::event$RECAPTURED,]$species))
   names(res) <- c("Species", "N")
+  res <- res[order(res$N, decreasing = TRUE), ]
   return(res)
 }
 
