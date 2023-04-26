@@ -27,12 +27,19 @@ You must then compile one single Excel that contains several tabs with specific 
 
 ### Adding loggerdata
 
+#### Alt 1. You have data from HOBO loggera
+
 1. Use HOBOware to convert the hobo data files to excel-files. One file from logger in the water and one from logger in the air.
 2. Add each file to a tab in the file. Name the tabs *Envlogger_water* and *Envlogger_land*. 
 
-### Running Smoltreg2sotebasen
+#### Alt 2. You have manually measured temp and level
 
-The script to run sanity checks on the *Smoltreg*-file can be run on the web and no software need to be installed on your computer (except a web-browser). Go to https://kagervall.shinyapps.io/smoltreg2sotebasen/ to run the script.
+1. Add a sheet named *Miljödata* with three columns *date*, *w_level* and *w_temp*.
+2. Add your values to the *Miljödata* sheet.
 
-The normal procedure is to iterate steps 1 and 2 and when all errors are fixed run step 3 to generate a zip-file (containing several csv-files) that can be delivered to Sötebasen for import. Step 4 is optional and generates a *SQLite3* database that might be useful for your analyses.
+### Running the Smoltreg app
+
+Start the shiny app to sanity checks on the *Smoltreg*-file with the command *Smoltreg::smoltregApp()*.
+
+Check your file by clicking on the various buttons. Often errors are dependent on each other so start topmost test and fix errors as you go.
 
