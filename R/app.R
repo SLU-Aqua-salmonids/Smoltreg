@@ -1,5 +1,5 @@
 
-library(shiny)
+#library(shiny)
 
 
 #' smoltregApp
@@ -56,8 +56,8 @@ smoltregApp <- function() {
                     shiny::column(width = 8, shiny::tableOutput("checkdiffspecies"))),
     shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("checkfulton", "List fulton outliers")),
                     shiny::column(width = 8, shiny::tableOutput("checkfulton"))),
-    shiny::fluidRow(shiny::column(width = 4, shiny::actionButton("XLSXfile", "Save Sötebasen-file")),
-                    shiny::column(width = 8, shiny::p("FOO")))
+    shiny::fluidRow(shiny::column(width = 4, shiny::downloadButton("XLSXfile", "Save Sötebasen-file")),
+                    shiny::column(width = 8, shiny::checkboxInput("do_envdata", "Use envdata", value = TRUE)))
   )
 
   # Server ------------------------------------------------------------------------
