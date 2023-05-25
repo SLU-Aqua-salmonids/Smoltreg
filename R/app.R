@@ -284,7 +284,11 @@ smoltregApp <- function() {
                                 Sekretess = "Nej",
                                 Signatur = metadata()$Signatur
         )
-        # Also "Ansträngning" is one season for one trap..
+        # Also "Ansträngning" is one season for one trap.
+        AnmAnstr <- ""
+        if (!is.null(metadata()$AnmAnstr)) {
+          AnmAnstr <- metadata()$AnmAnstr
+        }
         Ansträngning <- data.frame(AnsträngningID = 1,
                                    InsamlingID = 1,
                                    AnstrTyp = metadata()$Metod,
@@ -294,7 +298,8 @@ smoltregApp <- function() {
                                    AnstrS99TM_N_1 = metadata()$N_coord,
                                    AnstrS99TM_E_1 = metadata()$E_coord,
                                    Märkning = metadata()$Märkning,
-                                   SignAnstr = metadata()$Signatur
+                                   SignAnstr = metadata()$Signatur,
+                                   AnmAnstr = AnmAnstr
         )
         ###
         ## Assume that catch_time == "00:00" equals missing time and set time to NA.
