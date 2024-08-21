@@ -1,0 +1,123 @@
+---
+title: "Manual Smoltreg2Sotebasen"
+author: "Anders Kagervall"
+date: "2024-08-21"
+format:
+  docx:
+    toc: false
+    number-sections: true
+    highlight-style: github
+---
+
+## Dataflow from Smoltreg to Sötebasen
+
+Data from the smolt traps are delivered in a Excel-file with a
+predefined format. Usually this file is named
+*Smoltreg_RIVER_YYYY_MM_DD.xlsx*. The file should contain the tabs:
+
+1.  *Fiskdata* with data for the individual catches.
+2.  *Metadata* Basic data about the location and active period of the
+    trap.
+3.  *Metadata2* Data needed by Sötebasen
+4.  *Dagbok* (Optional) Daily logg with information of significant
+    efents. Can also contain maually registered water temp and water
+    flow.
+5.  *Envlogger_water* Data from data logger (added by SLU see below)
+6.  *Envlogger_land* Data from data logger (added by SLU see below)
+
+In addition there should be two file from the temp/pressure loggers with
+the file extension *.hobo*. This data must be quality checked for errors
+and formatted into a format suitable for importing info *Sötebasen*. The
+formatted file is sent to *Ålderslabb* that will add additional data
+before the file is sent *Anders Kinnerbäck* to be imported into
+*Sötebasen*.
+
+All data from smolt traps are exported from Sötebasen into
+*\\\\storage-dh.slu.se\\restricted\$\\Sötebasen\\Exporter\\Smoltfälla\*.csv*.
+These .csv-files are later used as input for estimation of the total
+smolt runs.
+
+Package *Smoltreg* contains routines and a shiny-app that will
+facilitate the error checking and finally format a file ready to be sent
+to ålderslab
+
+### Workflow
+
+Make copies of the delivered data files for a smolt trap. You will find
+the raw (as delivered) data files on the central file server
+*\\\\storage-dh.slu.se\\restricted\$\\Lax\\Data\\YYYY\\Rådata\\RIVER*
+(where *YYYY* and *RIVER* should be changed). You should have at least
+an Excel file with fishdata and an file from the temp-pressure logger.
+
+You must then compile one single Excel that contains several tabs with
+specific tabs for fishdata, environmental data (temp and water level)
+and metadata.
+
+1.  Open your copy of the Excel file and make an initial check of the
+    tab *Fiskdata*. The tab *Fiskdata* should be a list of fish
+    observations.
+2.  Do a quick scan of the data to find obvious error. For example check
+    that the same date format, the prefered data format is *YY-MM-DD
+    HH:MM*. Obvious errors should be fixed before you try to run the
+    data checking script.
+3.  Switch to tab *Metadata* and check that it is filled by the trap
+    personel, otherwise fill it yourself (*Dummy tag:* is optional).
+4.  Create a new tab named *Metadata2*. This tab contains fields that
+    are required for the Sötebasen-import. Needed fields are: Metod,
+    Beställare, Ansvarig, Syfte, Sekretess, Märkning and Signatur. See
+    an example from previous year for an example.
+
+### Adding loggerdata
+
+#### Alt 1. You have data from HOBO loggers.
+
+1.  Use HOBOware to convert the hobo data files to excel-files. One file
+    from logger in the water and one from logger in the air. Make sure
+    that to use SI-units (kPa and °C), only export data and no events.
+2.  Add each file to a tab in the file. Name the tabs *Envlogger_water*
+    and *Envlogger_land*.
+
+The app will trim the data to include dates between start and stop date
+(defined in tab Metadata), calculate water depth from the preassure and
+calculate mean temp and depth for each day.
+
+#### Alt 2. You have manually measured temp and level
+
+If data from loggers for some reason isn't available you can use data
+recorded maually or downloaded from the net.
+
+1.  Add a sheet named *Miljödata* with three columns *date*, *w_level*
+    and *w_temp*.
+2.  Add your values to the *Miljödata* sheet. One row per date for the
+    period the trap was active.
+
+### Running the Smoltreg app
+
+*Smoltreg::smoltregApp()* is a shiny-app that facilitates quality
+assurance of the input file and formatting of a output file in the
+format required by *Sötebasen*. The app will automatically fix some
+errors, for example fix case of species names.
+
+1.  Start the shiny app to sanity checks on the *Smoltreg*-file with the
+    command *Smoltreg::smoltregApp()*.
+2.  Check your file by clicking on the various buttons from top to
+    bottom. Often errors are dependent on each other so start topmost
+    test and fix errors as you go.
+3.  Everytime you make changes reload the file and check evrything until
+    all errors are eliminated.
+4.  Finally the button "Save Sötebasen-file" can save a file suitable to
+    import into Sötebasen.
+
+## Flowchart
+
+```{mermaid}
+%%| fig-cap: Workflow to qualitycheck the incomming smolt data 
+%%| fig-alt: Flowchart quality check
+%%| label: fig-flowchart
+flowchart TD
+    A[Smoltreg.xlsx] --> B(smoltregApp)
+    B --> C{All test OK}
+    C -->|No| D[Fix error] --> B
+    C -->|Yes| E[Save Sötebasen-file]
+    E --> F[Send to Ålderslabb]
+```
