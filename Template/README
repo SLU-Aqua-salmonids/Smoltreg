@@ -1,1 +1,6 @@
 This folder contains examples on how a file formated for import to Sötebasen should be formated.
+
+ImportSötebasen.xlsx in \\storage-dh.slu.se\restricted$\Sötebasen\Importformulär is the complete
+documentation by Anders Kinnerbäck (check with him for updates).
+
+ImportSmoltdata.xlsx (in this folder) is fields and tabs that are needed to import smolt trap data.
