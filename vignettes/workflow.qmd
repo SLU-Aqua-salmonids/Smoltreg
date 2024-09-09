@@ -1,5 +1,6 @@
 ---
 title: "Smoltreg workflow"
+date: today
 vignette: >
   %\VignetteIndexEntry{Smoltreg workflow}
   %\VignetteEngine{quarto::html}
