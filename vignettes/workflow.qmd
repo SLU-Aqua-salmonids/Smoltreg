@@ -1,0 +1,75 @@
+---
+title: "Smoltreg workflow"
+vignette: >
+  %\VignetteIndexEntry{Smoltreg workflow}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## Workflow overview
+
+To assist in the quality assurance of smolt data (used for mark/recapture studies and more)
+several R-packages are available. This vignette in package _Smoltreg_ gives an overview
+of the whole process from delivery of raw data from the traps to a human readable report with
+assesment of smolt production for a river.
+
+
+
+```{r install_stuff, eval=FALSE, include=TRUE}
+# Install our inhouse packages used
+remotes::install_github("SLU-Aqua-diadromous/Smoltreg", build_vignettes = TRUE)
+remotes::install_github("SLU-Aqua-diadromous/smolts2bugs", build_vignettes = TRUE)
+remotes::install_github("SLU-Aqua-diadromous/SmoltReports")
+
+```
+
+```{mermaid}
+%%| fig-width: 7
+%%| fig-cap: Overview of workflow for smolt traps data collection
+%%| fig-alt: Workflow diagram
+%%| label: fig-workflow
+flowchart TD
+  A[Archive received data on restricted/Lax/Data/YYYY/Rådata/River/... \nRegister the data in restricted/Lax/Data/Loggbok_Datahantering_Lax.xlsx]
+  B[Make a private copy for quality check and prepatation for Sötebasen \nCheck and fix the data when data is OK prepare a Sötebasen file. \nTool to check data and format Sötebasen file at github.com/SLU-Aqua-diadromous/Smoltreg \nMail Sötebasen-file to Ålderslabb]
+  C[When the data is imported in Sötebasen it will be available at: \nrestricted/Sötebasen/Exporter/Smoltfälla*.csv]
+  D[Use package smolt2bugs to reformat Sötebasen export to an Blackbox/Excel-file\nCut and Paste result into Blackbox]
+  E[Create report using SmoltReports]
+  A --> B
+  B --> C
+  C --> D
+  D --> E
+```
+
+
+
+1. Data arrives to dcfdata@slu.se:
+    + Save data in $restricted/Lax/Data/YYYY/Rådata/River/Smoltfälla
+    + Copy the data files to a personal work folder
+2. Start Smoltreg::smoltregApp()
+    + Load Smoltreg Excel file
+    + Check data
+    + Fix errors
+    + Repeat until clean
+    + Save Sötebasen file
+3. Mail Sötebasen file to Ålderslabb (Malin)
+4. Create BlackBox input (<https://github.com/SLU-Aqua-diadromous/smolts2bugs>)
+    + Use _söte2bugs.R_ to convert data with _$restricted/Sötebasen/Exporter/_ as input
+    + Use _söte_import2bugs.R_ to convert the file we send to Ålderslabb as input
+5. Run model in _BlackBox_
+    + Start BlackBox (see also original documentation from Atso and Stefan^[_Introduction to smolt model and Blackbox_Stefan P. Dec 2010_updated Feb 6 2017.docx_ installed in inst/BlackBox/doc])
+    + Cut and paste data from the Excel file produced by _smolts2bugs_ into the various _.odc_ files.
+    + Run the model and save the results (Described below and in the original documentation)
+6. Use <https://github.com/SLU-Aqua-diadromous/SmoltReports> to produce report
+
+## Save `BlackBox` data
+
+Open `Samples...` in the `Inference` menue in `BlackBox`. Set `chains` to 1 to 2, `beg` to 5000,  `end` to 25 000 and `thin` to 20. This will extract 1000 samples from each chain for a total of 2000 samples.
+
+First extract summary statistics for all variables by setting `node` to * and click `stats`. Select all data in the `Node statistics` window and paste it into Excel. If Column A is blank delete it. Rename the sheet to `stats` and save the file as `model_results.xlsx` in the `SMOLTS_river_year/species` folder.
+
+Change `node` to `CU` and click `coda`. Three windows will open but you can close the one called `CODA index`. Create a new sheet in the `model_results.xlsx` spread sheet and rename it to `CU`. Select everything in the window `CODA for chain 1`, copy and paste to the `CU` sheet (columns A and B). Repeat for window `CODA for chain 2` but copy into columns C and D. Remove the (duplicated) column C. Insert a row at the top and set column names to `iteration`, `chain1` and `chain2`. Repeat the above steps for node `sigma` and save the Excel file.
+
+Create a Word-file named `gelman_rubin.docx` in the `SMOLTS_river_year/species` folder and cut and paste the two windows named `Gelman Rubin statistic`.
+
+
