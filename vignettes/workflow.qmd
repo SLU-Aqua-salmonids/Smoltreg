@@ -1,5 +1,5 @@
 ---
-title: "Smoltreg workflow"
+title: "Workflow: Smolt traps -> Sötebasen -> Estimates"
 date: today
 vignette: >
   %\VignetteIndexEntry{Smoltreg workflow}
