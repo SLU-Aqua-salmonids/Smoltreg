@@ -61,7 +61,7 @@ flowchart TD
     + Start BlackBox (see also original documentation from Atso and Stefan^[_Introduction to smolt model and Blackbox_Stefan P. Dec 2010_updated Feb 6 2017.docx_ installed in inst/BlackBox/doc])
     + Cut and paste data from the Excel file produced by _smolts2bugs_ into the various _.odc_ files.
     + Run the model and save the results (Described below and in the original documentation)
-6. Use <https://alu-aqua-diadromous.github.io/SmoltReports/> to produce report
+6. Use <https://slu-aqua-diadromous.github.io/SmoltReports/> to produce report
 
 
 ## Dataflow from Smoltreg to Sötebasen
