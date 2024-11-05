@@ -55,13 +55,13 @@ flowchart TD
     + Save Sötebasen file
 3. Mail Sötebasen file to Ålderslabb (Malin)
 4. Create BlackBox input (<https://github.com/SLU-Aqua-diadromous/smolts2bugs>)
-    + Use _söte2bugs.R_ to convert data with _$restricted/Sötebasen/Exporter/_ as input
-    + Use _söte_import2bugs.R_ to convert the file we send to Ålderslabb as input
+    + Use _sote2bugs.R_ to convert data with _$restricted/Sötebasen/Exporter/_ as input
+    + Use _sote_import2bugs.R_ to convert the file we send to Ålderslabb as input
 5. Run model in _BlackBox_
     + Start BlackBox (see also original documentation from Atso and Stefan^[_Introduction to smolt model and Blackbox_Stefan P. Dec 2010_updated Feb 6 2017.docx_ installed in inst/BlackBox/doc])
     + Cut and paste data from the Excel file produced by _smolts2bugs_ into the various _.odc_ files.
     + Run the model and save the results (Described below and in the original documentation)
-6. Use <https://github.com/SLU-Aqua-diadromous/SmoltReports> to produce report
+6. Use <https://alu-aqua-diadromous.github.io/SmoltReports/> to produce report
 
 
 ## Dataflow from Smoltreg to Sötebasen
