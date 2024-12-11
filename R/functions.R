@@ -178,8 +178,10 @@ read_fish <- function(xlsxfile, dummy_tags = NULL, sheet = "Fiskdata",
     d$date_time <- impute_date_time(d$date_time)
   }
   d$date_time <- as.POSIXct(d$date_time)
+  
+  ## Find pittag id where event is RECAPTURE and species is left blank
   recaptures_id <- d[d$event == Smoltreg::event$RECAPTURED & is.na(d$species), ]$pittag
-  recaptures_id <- unique(recaptures_id) # Filter duplicates (maybe not the right thing to do)
+  recaptures_id <- unique(recaptures_id) # Filter duplicates
   if (length(recaptures_id > 0)) { # Create a table with the data recorded for pittag at marking
     sp.df <- d[d$event == Smoltreg::event$MARKED & d$pittag %in% recaptures_id,
                c("pittag", "species", "length", "weight", "smoltstat")] # Columns to extract

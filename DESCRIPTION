@@ -1,6 +1,6 @@
 Package: Smoltreg
 Title: Check data quality of data files delivered from smolt traps
-Version: 0.1.0.9000
+Version: 0.2.0
 Authors@R: 
     person("Anders", "Kagervall", , "anders.kagervall", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-4790-2696"))
