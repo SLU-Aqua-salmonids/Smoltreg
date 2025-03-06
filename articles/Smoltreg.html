@@ -48,10 +48,10 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1></h1>
+      <h1>Workflow: Smolt traps -&gt; Sötebasen -&gt; Estimates</h1>
 
 
-      <p class="date">2024-12-12</p>
+      <p class="date">2025-03-06</p>
 
 
       <div class="d-none name"><code></code></div>
@@ -62,8 +62,8 @@
 
 
 
-    <header id="title-block-header" class="quarto-title-block"><h1 class="title">Workflow: Smolt traps -&gt; Sötebasen -&gt; Estimates</h1></header><section class="section level3"><h3 id="workflow-overview">Workflow overview<a class="anchor" aria-label="anchor" href="#workflow-overview"></a>
-</h3>
+    <section class="level2"><h2 id="workflow-overview">Workflow overview<a class="anchor" aria-label="anchor" href="#workflow-overview"></a>
+</h2>
 <p>To assist in the quality assurance of smolt data (used for mark/recapture studies and more) several R-packages are available. This vignette in package <em>Smoltreg</em> gives an overview of the whole process from delivery of raw data from the traps to a human readable report with assesment of smolt production for a river.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
@@ -127,8 +127,8 @@ Figure 1: Overview of workflow for smolt traps data collection
 </ul>
 </li>
 <li>Use <a href="https://slu-aqua-diadromous.github.io/SmoltReports/" class="external-link uri">https://slu-aqua-diadromous.github.io/SmoltReports/</a> to produce report</li>
-</ol></section><section class="section level3"><h3 id="dataflow-from-smoltreg-to-sötebasen">Dataflow from Smoltreg to Sötebasen<a class="anchor" aria-label="anchor" href="#dataflow-from-smoltreg-to-s%C3%B6tebasen"></a>
-</h3>
+</ol></section><section class="level2"><h2 id="dataflow-from-smoltreg-to-sötebasen">Dataflow from Smoltreg to Sötebasen<a class="anchor" aria-label="anchor" href="#dataflow-from-smoltreg-to-s%C3%B6tebasen"></a>
+</h2>
 <p>This section describes the parts 1 to 3 of the workflow in more detail.</p>
 <p>Data from the smolt traps are delivered in a Excel-file with a predefined format. Usually this file is named <em>Smoltreg_RIVER_YYYY_MM_DD.xlsx</em>. The file should contain the tabs:</p>
 <ol type="1">
@@ -148,8 +148,8 @@ Figure 1: Overview of workflow for smolt traps data collection
 <p>In addition there should be two file from the temp/pressure loggers with the file extension <em>.hobo</em>. This data must be quality checked for errors and formatted into a format suitable for importing info <em>Sötebasen</em>. The formatted file is sent to <em>Ålderslabb</em> that will add additional data before the file is sent <em>Anders Kinnerbäck</em> to be imported into <em>Sötebasen</em>.</p>
 <p>All data from smolt traps are exported from Sötebasen into <em>\\storage-dh.slu.se\restricted$\Sötebasen\Exporter\Smoltfälla*.csv</em>. These .csv-files are later used as input for estimation of the total smolt runs.</p>
 <p>Package <em>Smoltreg</em> contains routines and a shiny-app that will facilitate the error checking and finally format a file ready to be sent to ålderslab</p>
-<section class="level3"><h4 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
-</h4>
+<section class="level3"><h3 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
+</h3>
 <p>Make copies of the delivered data files for a smolt trap. You will find the raw (as delivered) data files on the central file server <em>\\storage-dh.slu.se\restricted$\Lax\Data\YYYY\Rådata\RIVER</em> (where <em>YYYY</em> and <em>RIVER</em> should be changed). You should have at least an Excel file with fishdata and an file from the temp-pressure logger.</p>
 <p>You must then compile one single Excel that contains several tabs with specific tabs for fishdata, environmental data (temp and water level) and metadata.</p>
 <ol type="1">
@@ -157,31 +157,31 @@ Figure 1: Overview of workflow for smolt traps data collection
 <li>Do a quick scan of the data to find obvious error. For example check that the same date format, the prefered data format is <em>YY-MM-DD HH:MM</em>. Obvious errors should be fixed before you try to run the data checking script.</li>
 <li>Switch to tab <em>Metadata</em> and check that it is filled by the trap personel, otherwise fill it yourself (<em>Dummy tag:</em> is optional).</li>
 <li>Create a new tab named <em>Metadata2</em>. This tab contains fields that are required for the Sötebasen-import. Needed fields are: Metod, Beställare, Ansvarig, Syfte, Sekretess, Märkning and Signatur. See an example from previous year for an example.</li>
-</ol></section><section class="level3"><h4 id="adding-loggerdata">Adding loggerdata<a class="anchor" aria-label="anchor" href="#adding-loggerdata"></a>
+</ol></section><section class="level3"><h3 id="adding-loggerdata">Adding loggerdata<a class="anchor" aria-label="anchor" href="#adding-loggerdata"></a>
+</h3>
+<section class="level4"><h4 id="alt-1--you-have-data-from-hobo-loggers-">Alt 1. You have data from HOBO loggers.<a class="anchor" aria-label="anchor" href="#alt-1--you-have-data-from-hobo-loggers-"></a>
 </h4>
-<section class="level4"><h5 id="alt-1--you-have-data-from-hobo-loggers-">Alt 1. You have data from HOBO loggers.<a class="anchor" aria-label="anchor" href="#alt-1--you-have-data-from-hobo-loggers-"></a>
-</h5>
 <ol type="1">
 <li>Use HOBOware to convert the hobo data files to excel-files. One file from logger in the water and one from logger in the air. Make sure that to use SI-units (kPa and °C), only export data and no events.</li>
 <li>Add each file to a tab in the file. Name the tabs <em>Envlogger_water</em> and <em>Envlogger_land</em>.</li>
 </ol>
 <p>The app will trim the data to include dates between start and stop date (defined in tab Metadata), calculate water depth from the preassure and calculate mean temp and depth for each day.</p>
-</section><section class="level4"><h5 id="alt-2--you-have-manually-measured-temp-and-level">Alt 2. You have manually measured temp and level<a class="anchor" aria-label="anchor" href="#alt-2--you-have-manually-measured-temp-and-level"></a>
-</h5>
+</section><section class="level4"><h4 id="alt-2--you-have-manually-measured-temp-and-level">Alt 2. You have manually measured temp and level<a class="anchor" aria-label="anchor" href="#alt-2--you-have-manually-measured-temp-and-level"></a>
+</h4>
 <p>If data from loggers for some reason isn’t available you can use data recorded maually or downloaded from the net.</p>
 <ol type="1">
 <li>Add a sheet named <em>Miljödata</em> with three columns <em>date</em>, <em>w_level</em> and <em>w_temp</em>.</li>
 <li>Add your values to the <em>Miljödata</em> sheet. One row per date for the period the trap was active.</li>
-</ol></section></section><section class="level3"><h4 id="running-the-smoltreg-app">Running the Smoltreg app<a class="anchor" aria-label="anchor" href="#running-the-smoltreg-app"></a>
-</h4>
+</ol></section></section><section class="level3"><h3 id="running-the-smoltreg-app">Running the Smoltreg app<a class="anchor" aria-label="anchor" href="#running-the-smoltreg-app"></a>
+</h3>
 <p><em>Smoltreg::smoltregApp()</em> is a shiny-app that facilitates quality assurance of the input file and formatting of a output file in the format required by <em>Sötebasen</em>. The app will automatically fix some errors, for example fix case of species names.</p>
 <ol type="1">
 <li>Start the shiny app to sanity checks on the <em>Smoltreg</em>-file with the command <em>Smoltreg::smoltregApp()</em>.</li>
 <li>Check your file by clicking on the various buttons from top to bottom. Often errors are dependent on each other so start topmost test and fix errors as you go.</li>
 <li>Everytime you make changes reload the file and check evrything until all errors are eliminated.</li>
 <li>Finally the button “Save Sötebasen-file” can save a file suitable to import into Sötebasen.</li>
-</ol></section></section><section class="section level3"><h3 id="flowchart">Flowchart<a class="anchor" aria-label="anchor" href="#flowchart"></a>
-</h3>
+</ol></section></section><section class="level2"><h2 id="flowchart">Flowchart<a class="anchor" aria-label="anchor" href="#flowchart"></a>
+</h2>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div id="fig-flowchart" class="quarto-float quarto-figure quarto-figure-center">
@@ -202,8 +202,8 @@ Figure 2: Workflow to qualitycheck the incomming smolt data
 </div>
 </div>
 </div>
-</section><section class="section level3"><h3 id="save-blackbox-data">Save <code>BlackBox</code> data<a class="anchor" aria-label="anchor" href="#save-blackbox-data"></a>
-</h3>
+</section><section class="level2"><h2 id="save-blackbox-data">Save <code>BlackBox</code> data<a class="anchor" aria-label="anchor" href="#save-blackbox-data"></a>
+</h2>
 <p>Open <code>Samples...</code> in the <code>Inference</code> menue in <code>BlackBox</code>. Set <code>chains</code> to 1 to 2, <code>beg</code> to 5000, <code>end</code> to 25 000 and <code>thin</code> to 20. This will extract 1000 samples from each chain for a total of 2000 samples.</p>
 <p>First extract summary statistics for all variables by setting <code>node</code> to * and click <code>stats</code>. Select all data in the <code>Node statistics</code> window and paste it into Excel. If Column A is blank delete it. Rename the sheet to <code>stats</code> and save the file as <code>model_results.xlsx</code> in the <code>SMOLTS_river_year/species</code> folder.</p>
 <p>Change <code>node</code> to <code>CU</code> and click <code>coda</code>. Three windows will open but you can close the one called <code>CODA index</code>. Create a new sheet in the <code>model_results.xlsx</code> spread sheet and rename it to <code>CU</code>. Select everything in the window <code>CODA for chain 1</code>, copy and paste to the <code>CU</code> sheet (columns A and B). Repeat for window <code>CODA for chain 2</code> but copy into columns C and D. Remove the (duplicated) column C. Insert a row at the top and set column names to <code>iteration</code>, <code>chain1</code> and <code>chain2</code>. Repeat the above steps for node <code>sigma</code> and save the Excel file.</p>
