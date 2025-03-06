@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   Smoltreg: Smoltreg.html
-last_built: 2025-03-06T10:29Z
+last_built: 2025-03-06T11:14Z
 urls:
   reference: https://slu-aqua-diadromous.github.io/Smoltreg/reference
   article: https://slu-aqua-diadromous.github.io/Smoltreg/articles
