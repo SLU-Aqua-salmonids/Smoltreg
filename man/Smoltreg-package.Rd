@@ -12,6 +12,7 @@ What the package does (one paragraph).
 Useful links:
 \itemize{
   \item \url{https://slu-aqua-salmonids.github.io/Smoltreg/}
+  \item \url{https://github.com/SLU-Aqua-salmonids/Smoltreg/}
 }
 
 }

@@ -27,4 +27,4 @@ Depends:
     R (>= 2.10)
 LazyData: true
 VignetteBuilder: quarto
-URL: https://slu-aqua-salmonids.github.io/Smoltreg/
+URL: https://slu-aqua-salmonids.github.io/Smoltreg/, https://github.com/SLU-Aqua-salmonids/Smoltreg/
