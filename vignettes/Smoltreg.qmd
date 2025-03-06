@@ -19,9 +19,9 @@ assesment of smolt production for a river.
 
 ```{r install_stuff, eval=FALSE, include=TRUE}
 # Install our inhouse packages used
-remotes::install_github("SLU-Aqua-diadromous/Smoltreg", build_vignettes = TRUE)
-remotes::install_github("SLU-Aqua-diadromous/smolts2bugs", build_vignettes = TRUE)
-remotes::install_github("SLU-Aqua-diadromous/SmoltReports")
+remotes::install_github("SLU-Aqua-salmonids/Smoltreg", build_vignettes = TRUE)
+remotes::install_github("SLU-Aqua-salmonids/smolts2bugs", build_vignettes = TRUE)
+remotes::install_github("SLU-Aqua-salmonids/SmoltReports")
 
 ```
 
@@ -32,7 +32,7 @@ remotes::install_github("SLU-Aqua-diadromous/SmoltReports")
 %%| label: fig-workflow
 flowchart TD
   A[Archive received data on restricted/Lax/Data/YYYY/Rådata/River/... \nRegister the data in restricted/Lax/Data/Loggbok_Datahantering_Lax.xlsx]
-  B[Make a private copy for quality check and prepatation for Sötebasen \nCheck and fix the data when data is OK prepare a Sötebasen file. \nTool to check data and format Sötebasen file at github.com/SLU-Aqua-diadromous/Smoltreg \nMail Sötebasen-file to Ålderslabb]
+  B[Make a private copy for quality check and prepatation for Sötebasen \nCheck and fix the data when data is OK prepare a Sötebasen file. \nTool to check data and format Sötebasen file at github.com/SLU-Aqua-salmonids/Smoltreg \nMail Sötebasen-file to Ålderslabb]
   C[When the data is imported in Sötebasen it will be available at: \nrestricted/Sötebasen/Exporter/Smoltfälla*.csv]
   D[Use package smolt2bugs to reformat Sötebasen export to an Blackbox/Excel-file\nCut and Paste result into Blackbox]
   E[Create report using SmoltReports]
@@ -54,14 +54,14 @@ flowchart TD
     + Repeat until clean
     + Save Sötebasen file
 3. Mail Sötebasen file to Ålderslabb (Malin)
-4. Create BlackBox input (<https://github.com/SLU-Aqua-diadromous/smolts2bugs>)
+4. Create BlackBox input (<https://github.com/SLU-Aqua-salmonids/smolts2bugs>)
     + Use _sote2bugs.R_ to convert data with _$restricted/Sötebasen/Exporter/_ as input
     + Use _sote_import2bugs.R_ to convert the file we send to Ålderslabb as input
 5. Run model in _BlackBox_
     + Start BlackBox (see also original documentation from Atso and Stefan^[_Introduction to smolt model and Blackbox_Stefan P. Dec 2010_updated Feb 6 2017.docx_ installed in inst/BlackBox/doc])
     + Cut and paste data from the Excel file produced by _smolts2bugs_ into the various _.odc_ files.
     + Run the model and save the results (Described below and in the original documentation)
-6. Use <https://slu-aqua-diadromous.github.io/SmoltReports/> to produce report
+6. Use <https://slu-aqua-salmonids.github.io/SmoltReports/> to produce report
 
 
 ## Dataflow from Smoltreg to Sötebasen
