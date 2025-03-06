@@ -31,10 +31,10 @@ remotes::install_github("SLU-Aqua-salmonids/SmoltReports")
 %%| fig-alt: Workflow diagram
 %%| label: fig-workflow
 flowchart TD
-  A[Archive received data on restricted/Lax/Data/YYYY/Rådata/River/... \nRegister the data in restricted/Lax/Data/Loggbok_Datahantering_Lax.xlsx]
-  B[Make a private copy for quality check and prepatation for Sötebasen \nCheck and fix the data when data is OK prepare a Sötebasen file. \nTool to check data and format Sötebasen file at github.com/SLU-Aqua-salmonids/Smoltreg \nMail Sötebasen-file to Ålderslabb]
-  C[When the data is imported in Sötebasen it will be available at: \nrestricted/Sötebasen/Exporter/Smoltfälla*.csv]
-  D[Use package smolt2bugs to reformat Sötebasen export to an Blackbox/Excel-file\nCut and Paste result into Blackbox]
+  A[Archive received data on restricted/Lax/Data/YYYY/Rådata/River/... <br>Register the data in restricted/Lax/Data/Loggbok_Datahantering_Lax.xlsx]
+  B[Make a private copy for quality check and prepatation for Sötebasen <br>Check and fix the data when data is OK prepare a Sötebasen file. <br>Tool to check data and format Sötebasen file at github.com/SLU-Aqua-salmonids/Smoltreg <br>Mail Sötebasen-file to Ålderslabb]
+  C[When the data is imported in Sötebasen it will be available at: <br>restricted/Sötebasen/Exporter/Smoltfälla*.csv]
+  D[Use package smolt2bugs to reformat Sötebasen export to an Blackbox/Excel-file<br>Cut and Paste result into Blackbox]
   E[Create report using SmoltReports]
   A --> B
   B --> C
