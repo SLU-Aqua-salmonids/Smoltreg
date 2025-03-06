@@ -68,9 +68,9 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install our inhouse packages used</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"SLU-Aqua-diadromous/Smoltreg"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"SLU-Aqua-diadromous/smolts2bugs"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"SLU-Aqua-diadromous/SmoltReports"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"SLU-Aqua-salmonids/Smoltreg"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"SLU-Aqua-salmonids/smolts2bugs"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"SLU-Aqua-salmonids/SmoltReports"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="cell" data-fig-width="7" data-layout-align="default">
 <div class="cell-output-display">
@@ -79,7 +79,7 @@
 <div>
 <pre class="mermaid mermaid-js" data-label="fig-workflow">flowchart TD
   A[Archive received data on restricted/Lax/Data/YYYY/Rådata/River/... \nRegister the data in restricted/Lax/Data/Loggbok_Datahantering_Lax.xlsx]
-  B[Make a private copy for quality check and prepatation for Sötebasen \nCheck and fix the data when data is OK prepare a Sötebasen file. \nTool to check data and format Sötebasen file at github.com/SLU-Aqua-diadromous/Smoltreg \nMail Sötebasen-file to Ålderslabb]
+  B[Make a private copy for quality check and prepatation for Sötebasen \nCheck and fix the data when data is OK prepare a Sötebasen file. \nTool to check data and format Sötebasen file at github.com/SLU-Aqua-salmonids/Smoltreg \nMail Sötebasen-file to Ålderslabb]
   C[When the data is imported in Sötebasen it will be available at: \nrestricted/Sötebasen/Exporter/Smoltfälla*.csv]
   D[Use package smolt2bugs to reformat Sötebasen export to an Blackbox/Excel-file\nCut and Paste result into Blackbox]
   E[Create report using SmoltReports]
@@ -113,7 +113,7 @@ Figure 1: Overview of workflow for smolt traps data collection
 </ul>
 </li>
 <li>Mail Sötebasen file to Ålderslabb (Malin)</li>
-<li>Create BlackBox input (<a href="https://github.com/SLU-Aqua-diadromous/smolts2bugs" class="external-link uri">https://github.com/SLU-Aqua-diadromous/smolts2bugs</a>)
+<li>Create BlackBox input (<a href="https://github.com/SLU-Aqua-salmonids/smolts2bugs" class="external-link uri">https://github.com/SLU-Aqua-salmonids/smolts2bugs</a>)
 <ul>
 <li>Use <em>sote2bugs.R</em> to convert data with <em>$restricted/Sötebasen/Exporter/</em> as input</li>
 <li>Use <em>sote_import2bugs.R</em> to convert the file we send to Ålderslabb as input</li>
@@ -126,7 +126,7 @@ Figure 1: Overview of workflow for smolt traps data collection
 <li>Run the model and save the results (Described below and in the original documentation)</li>
 </ul>
 </li>
-<li>Use <a href="https://slu-aqua-diadromous.github.io/SmoltReports/" class="external-link uri">https://slu-aqua-diadromous.github.io/SmoltReports/</a> to produce report</li>
+<li>Use <a href="https://slu-aqua-salmonids.github.io/SmoltReports/" class="external-link uri">https://slu-aqua-salmonids.github.io/SmoltReports/</a> to produce report</li>
 </ol></section><section class="level2"><h2 id="dataflow-from-smoltreg-to-sötebasen">Dataflow from Smoltreg to Sötebasen<a class="anchor" aria-label="anchor" href="#dataflow-from-smoltreg-to-s%C3%B6tebasen"></a>
 </h2>
 <p>This section describes the parts 1 to 3 of the workflow in more detail.</p>
