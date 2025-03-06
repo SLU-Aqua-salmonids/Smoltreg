@@ -8,6 +8,13 @@
 \description{
 What the package does (one paragraph).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://slu-aqua-salmonids.github.io/Smoltreg/}
+}
+
+}
 \author{
 \strong{Maintainer}: Anders Kagervall \email{anders.kagervall} (\href{https://orcid.org/0000-0003-4790-2696}{ORCID})
 
